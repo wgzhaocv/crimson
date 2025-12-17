@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" className={notoJp.variable}>
+    <html lang="ja" className={notoJp.variable} suppressHydrationWarning>
       <body className={`${notoJp.variable} ${delaGothic.variable} antialiased`}>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
