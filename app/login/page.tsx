@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { GoogleIcon } from "@/assets/svg/components/GoogleIcon";
 import {
   Card,
@@ -8,10 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { GoogleLogin } from "@/components/AuthButton/GoogleLogin";
+import { PasskeyLogin } from "@/components/AuthButton/PasskeyLogin";
 
 const LoginPage = () => {
+  const [error, setError] = useState<string | null>(null);
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-background text-foreground relative overflow-hidden p-4">
       {/* Theme Toggle */}
@@ -36,16 +40,15 @@ const LoginPage = () => {
         </CardHeader>
 
         <CardContent className="grid gap-6 p-6">
-          {/* Google Login */}
-          <Button
-            variant="outline"
-            className="w-full h-12 text-xs font-bold border-border/60 bg-transparent hover:bg-accent transition-all duration-300"
-          >
-            <div className="mr-3">
-              <GoogleIcon />
+          {/* Error Message */}
+          {error && (
+            <div className="p-3 text-xs text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
+              {error}
             </div>
-            Googleでサインイン
-          </Button>
+          )}
+
+          {/* Google Login */}
+          <GoogleLogin />
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -59,9 +62,7 @@ const LoginPage = () => {
           </div>
 
           {/* Passkey Login: より重厚感のあるボタンデザイン */}
-          <Button className="w-full h-14 text-sm font-black uppercase tracking-[0.1em] bg-primary text-primary-foreground hover:opacity-90 shadow-md shadow-primary/20 dark:shadow-[0_8px_30px_rgba(var(--primary),0.4)] transition-all duration-300">
-            パスキーでログイン
-          </Button>
+          <PasskeyLogin />
         </CardContent>
 
         <div className="px-6 pb-5 text-center">
