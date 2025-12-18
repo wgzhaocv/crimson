@@ -1,18 +1,31 @@
 "use client";
+
 import { GoogleIcon } from "@/assets/svg/components/GoogleIcon";
 import { Button } from "../ui/button";
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
+import { authClient } from "@/lib/auth-client";
+import { Spinner } from "../ui/spinner";
+import { getErrorMessage } from "@/lib/auth-error-messages";
 
-export const GoogleLogin = () => {
-  const [error, setError] = useState<string>("");
+export const GoogleLogin = ({
+  setError,
+}: {
+  setError: (error: string) => void;
+}) => {
   const [isPending, startTransition] = useTransition();
 
   const handleGoogleSignIn = async () => {
-    try {
-      setError("");
-    } catch (error) {
-      setError("Google登録失敗、再試行してください");
-    }
+    await authClient.signIn.social(
+      {
+        provider: "google",
+        callbackURL: "/",
+      },
+      {
+        onError(ctx) {
+          setError(getErrorMessage(ctx.error.code));
+        },
+      }
+    );
   };
 
   return (
@@ -25,7 +38,7 @@ export const GoogleLogin = () => {
       <div className="mr-3">
         <GoogleIcon />
       </div>
-      {isPending ? "サインイン中..." : "Googleでサインイン"}
+      {isPending ? <Spinner /> : "Googleでサインイン"}
     </Button>
   );
 };
