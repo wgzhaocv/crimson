@@ -31,11 +31,11 @@
 :root {
   color-scheme: light;
 
-  /* 基础背景与前景 */
-  --background: oklch(0.98 0 0);
+  /* 基础背景与前景 - 白天模式略微调暗 0.98 -> 0.96 */
+  --background: oklch(0.96 0.005 25.4);
   --foreground: oklch(0.15 0.02 25);
 
-  /* 卡片与弹出层 */
+  /* 卡片与弹出层 - 保持纯白以在浅灰背景上产生层次感 */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.02 25);
   --popover: oklch(1 0 0);
@@ -56,7 +56,7 @@
   --accent-foreground: oklch(0.45 0.2 25.4);
   --destructive: oklch(0.5 0.2 25.4);
 
-  /* 边框（进一步降低亮度 0.88 -> 0.78，以提高清晰度） */
+  /* 边框（保持清晰度） */
   --border: oklch(0.78 0.02 25.4);
   --input: oklch(0.78 0.02 25.4);
   --ring: oklch(0.55 0.23 25.4 / 0.4);
@@ -83,14 +83,14 @@
 .dark {
   color-scheme: dark;
 
-  /* 基础背景与前景 */
-  --background: oklch(0.12 0.015 25);
+  /* 基础背景与前景 - 黑暗模式稍微调亮 0.12 -> 0.17 以增加质感 */
+  --background: oklch(0.17 0.015 25.4);
   --foreground: oklch(0.95 0.01 25);
 
-  /* 卡片与弹出层 */
-  --card: oklch(0.15 0.02 25);
+  /* 卡片与弹出层 - 相应调亮以维持层级 0.15 -> 0.22 */
+  --card: oklch(0.22 0.02 25.4);
   --card-foreground: oklch(0.95 0.01 25);
-  --popover: oklch(0.15 0.02 25);
+  --popover: oklch(0.22 0.02 25.4);
   --popover-foreground: oklch(0.95 0.01 25);
 
   /* 暗色模式主色调 */

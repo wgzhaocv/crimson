@@ -3,6 +3,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LogOut, Plus, FileCode } from "lucide-react";
+import { CopyRight } from "@/components/CopyRight";
 
 export default function Page() {
   return (
@@ -11,7 +12,7 @@ export default function Page() {
       <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center">
-            <LogoIcon className="w-8 h-8" />
+            <LogoIcon className="w-8 h-8 text-primary" />
             <span className="text-xl font-black tracking-tighter text-primary italic uppercase">
               CRIMSON
             </span>
@@ -64,12 +65,7 @@ export default function Page() {
         </div>
       </main>
 
-      {/* Footer Area */}
-      <footer className="py-10 text-center opacity-20">
-        <p className="text-[9px] tracking-[0.3em] uppercase font-bold">
-          &copy; 2025 CRIMSON
-        </p>
-      </footer>
+      <CopyRight />
     </div>
   );
 }

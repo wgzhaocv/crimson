@@ -7,6 +7,7 @@ import {
   integer,
   index,
 } from "drizzle-orm/pg-core";
+import { share } from "./biz-schema";
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -103,11 +104,14 @@ export const passkey = pgTable(
   ],
 );
 
+// 更新 userRelations
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
   passkeys: many(passkey),
+  shares: many(share),
 }));
+
 
 export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, {
