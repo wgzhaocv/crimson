@@ -37,16 +37,8 @@ const LoginPage = () => {
               CRIMSON
             </CardTitle>
             <CardDescription className="text-muted-foreground text-[10px] uppercase tracking-widest font-bold opacity-70">
-              ログインして作品を共有しよう
+              ログインしてHTMLを共有
             </CardDescription>
-          </div>
-
-          {/* 使用统计 */}
-          <div className="flex items-center justify-center gap-2 text-primary/70">
-            <Users className="w-3 h-3" />
-            <span className="text-[10px] font-black tracking-widest uppercase italic">
-              100+ 人が作品を共有中
-            </span>
           </div>
         </CardHeader>
 
@@ -90,6 +82,14 @@ const LoginPage = () => {
 
             {/* Passkey Login */}
             <PasskeyLogin setError={setError} />
+          </div>
+
+          {/* 使用统计 */}
+          <div className="flex items-center justify-center gap-2 text-muted-foreground/50 pt-2">
+            <Users className="w-3 h-3" />
+            <span className="text-[10px] font-bold tracking-wide">
+              100+ 人が自分のHTMLを共有中
+            </span>
           </div>
         </CardContent>
       </Card>

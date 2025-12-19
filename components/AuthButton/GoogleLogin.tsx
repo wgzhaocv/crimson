@@ -31,7 +31,7 @@ export const GoogleLogin = ({
   return (
     <Button
       variant="outline"
-      className="w-full h-12 text-xs font-bold border-border/60 bg-transparent hover:bg-accent transition-all duration-300"
+      className="w-full h-12 text-sm font-bold border-border/60 bg-transparent hover:bg-accent transition-all duration-300"
       onClick={() => startTransition(handleGoogleSignIn)}
       disabled={isPending}
     >
