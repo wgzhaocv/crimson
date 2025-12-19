@@ -30,39 +30,45 @@
 
 :root {
   color-scheme: light;
-  --background: oklch(0.98 0 0);
-  --foreground: oklch(0.15 0.02 25); /* 少し柔らかい黒 */
 
+  /* 基础背景与前景 */
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.15 0.02 25);
+
+  /* 卡片与弹出层 */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.02 25);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.02 25);
 
-  /* Crimson: 視認性の高い緋色 */
+  /* 主色调 (Crimson) */
   --primary: oklch(0.55 0.23 25.4);
-  --primary-foreground: oklch(0.99 0 0); /* 純白に近い白 */
+  --primary-foreground: oklch(0.99 0 0);
 
+  /* 次要色与静音色 */
   --secondary: oklch(0.96 0.01 25.4);
   --secondary-foreground: oklch(0.3 0.1 25.4);
-
   --muted: oklch(0.96 0.005 25.4);
   --muted-foreground: oklch(0.45 0.02 25.4);
 
+  /* 强调色与破坏性操作 */
   --accent: oklch(0.94 0.02 25.4);
   --accent-foreground: oklch(0.45 0.2 25.4);
+  --destructive: oklch(0.5 0.2 25.4);
 
-  --border: oklch(0.9 0.01 25.4);
-  --input: oklch(0.9 0.01 25.4);
+  /* 边框（进一步降低亮度 0.88 -> 0.78，以提高清晰度） */
+  --border: oklch(0.78 0.02 25.4);
+  --input: oklch(0.78 0.02 25.4);
   --ring: oklch(0.55 0.23 25.4 / 0.4);
   --radius: 0.75rem;
 
-  /* Sonner 颜色配置 (需在 <Toaster richColors /> 时生效)
-     我们让 Error 的颜色完全对齐 Crimson 主题 (Hue: 25.4)
-  */
+  /* Sonner 通知颜色 */
   --success-bg: oklch(0.95 0.08 145);
   --success-text: oklch(0.35 0.15 145);
   --success-border: oklch(0.9 0.1 145);
 
   --error-bg: oklch(0.97 0.03 25.4);
-  --error-text: oklch(0.55 0.23 25.4); /* 使用 Crimson */
+  --error-text: oklch(0.55 0.23 25.4);
   --error-border: oklch(0.92 0.05 25.4);
 
   --info-bg: oklch(0.95 0.05 245);
@@ -76,30 +82,38 @@
 
 .dark {
   color-scheme: dark;
+
+  /* 基础背景与前景 */
   --background: oklch(0.12 0.015 25);
   --foreground: oklch(0.95 0.01 25);
 
+  /* 卡片与弹出层 */
   --card: oklch(0.15 0.02 25);
   --card-foreground: oklch(0.95 0.01 25);
+  --popover: oklch(0.15 0.02 25);
+  --popover-foreground: oklch(0.95 0.01 25);
 
-  /* ダークモードでは少し彩度を上げ、発光感を出す */
+  /* 暗色模式主色调 */
   --primary: oklch(0.6 0.25 25.4);
-  --primary-foreground: oklch(0.99 0 0); /* ここが暗かったのを改善 */
+  --primary-foreground: oklch(0.99 0 0);
 
+  /* 次要色与静音色 */
   --secondary: oklch(0.2 0.04 25.4);
   --secondary-foreground: oklch(0.9 0.1 25.4);
-
   --muted: oklch(0.18 0.03 25.4);
   --muted-foreground: oklch(0.7 0.02 25.4);
 
-  --accent: oklch(0.25 0.08 25.4);
-  --accent-foreground: oklch(0.95 0.1 25.4);
+  /* 强调色（黑暗模式下调高亮度 0.25 -> 0.32，增强 hover 效果） */
+  --accent: oklch(0.32 0.06 25.4);
+  --accent-foreground: oklch(0.98 0.05 25.4);
+  --destructive: oklch(0.45 0.2 25.4);
 
-  --border: oklch(0.22 0.04 25.4);
-  --input: oklch(0.22 0.04 25.4);
+  /* 边框（保持较明显的可见度） */
+  --border: oklch(0.4 0.03 25.4);
+  --input: oklch(0.4 0.03 25.4);
   --ring: oklch(0.6 0.25 25.4 / 0.5);
 
-  /* Sonner Dark Mode - 调低明度，增加发光感 */
+  /* Sonner 暗色模式通知颜色 */
   --success-bg: oklch(0.18 0.04 145);
   --success-text: oklch(0.85 0.12 145);
   --success-border: oklch(0.25 0.08 145);
@@ -131,6 +145,7 @@
   animation: none;
   mix-blend-mode: normal;
 }
+
 ::view-transition-new(root) {
   z-index: 9999;
 }

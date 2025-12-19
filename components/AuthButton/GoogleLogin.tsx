@@ -1,6 +1,6 @@
 "use client";
 
-import { GoogleIcon } from "@/assets/svg/components/GoogleIcon";
+import { GoogleIcon } from "@/components/Icons/GoogleIcon";
 import { Button } from "../ui/button";
 import { useTransition } from "react";
 import { authClient } from "@/lib/auth-client";

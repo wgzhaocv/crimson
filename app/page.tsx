@@ -1,4 +1,4 @@
-import { LogoIcon } from "@/assets/svg/components/LogoIcon";
+import { LogoIcon } from "@/components/Icons/LogoIcon";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,7 @@ export default function Page() {
       {/* Header Area */}
       <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             <LogoIcon className="w-8 h-8" />
             <span className="text-xl font-black tracking-tighter text-primary italic uppercase">
               CRIMSON
