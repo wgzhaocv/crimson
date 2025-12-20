@@ -17,7 +17,7 @@ export const verifyLogin = async (credential: AuthenticationResponseJSON) => {
 
   const challengeData = await redisClient.get(`login:challenge:${challenge}`);
   if (!challengeData) {
-    return { success: false, error: "Challenge expired" };
+    return { success: false, error: "認証がタイムアウトしました" };
   }
 
   // 从数据库查找 passkey
@@ -30,7 +30,7 @@ export const verifyLogin = async (credential: AuthenticationResponseJSON) => {
   });
 
   if (!savedPasskey) {
-    return { success: false, error: "Passkey not found" };
+    return { success: false, error: "パスキーが見つかりません" };
   }
 
   const verifyResult = await verifyAuthenticationResponse({
@@ -49,7 +49,7 @@ export const verifyLogin = async (credential: AuthenticationResponseJSON) => {
   await redisClient.del(`login:challenge:${challenge}`);
 
   if (!verifyResult.verified) {
-    return { success: false, error: "Verification failed" };
+    return { success: false, error: "認証に失敗しました" };
   }
 
   // 更新 counter

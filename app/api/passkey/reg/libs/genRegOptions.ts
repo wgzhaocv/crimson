@@ -1,4 +1,3 @@
-"use server";
 import {
   generateRegistrationOptions,
 } from "@simplewebauthn/server";
@@ -7,13 +6,14 @@ import { getRelyingPartyID } from "@/lib/auth";
 import { nanoid } from "nanoid";
 
 export const genRegOptions = async () => {
-    const userId = nanoid(); // 默认 21 字符
-const userIdBuffer = Buffer.from(userId, "utf-8");
+  const userId = nanoid(); // 默认 21 字符
+  const userIdBuffer = Buffer.from(userId, "utf-8");
+  const displayName = `CrimsonUser#${userId.slice(0, 6)}`;
 
   const options = await generateRegistrationOptions({
     rpName: "CRIMSON",
     rpID: getRelyingPartyID(),
-    userName: userId,
+    userName: displayName,
     userID: userIdBuffer,
     authenticatorSelection: {
       userVerification: "required", // 强制要求用户验证
@@ -28,6 +28,7 @@ const userIdBuffer = Buffer.from(userId, "utf-8");
     JSON.stringify({
       challenge: options.challenge,
       userId,
+      displayName,
       createdAt: Date.now(),
     })
   );

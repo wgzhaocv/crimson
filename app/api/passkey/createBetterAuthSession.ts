@@ -17,10 +17,13 @@ export const createBetterAuthSession = async (userId: string) => {
   });
 
   // 签名
-  const signedToken = await createHMAC("SHA-256", "base64urlnopad").sign(
+  const signature = await createHMAC("SHA-256", "base64urlnopad").sign(
     process.env.BETTER_AUTH_SECRET!,
     sessionToken,
   );
+
+  // cookie 格式: token.signature
+  const cookieValue = `${sessionToken}.${signature}`;
 
   // 设置 cookie
   const cookieStore = await cookies();
@@ -30,7 +33,7 @@ export const createBetterAuthSession = async (userId: string) => {
     isSecure
       ? "__Secure-better-auth.session_token"
       : "better-auth.session_token",
-    signedToken,
+    cookieValue,
     {
       expires: expiresAt,
       httpOnly: true,
