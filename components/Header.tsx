@@ -1,9 +1,32 @@
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { LogOut } from "lucide-react";
 import { LogoIcon } from "./Icons/LogoIcon";
 import { ThemeToggle } from "./theme-toggle";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useTransition } from "react";
+import { Spinner } from "./ui/spinner";
 
 export const Header = () => {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const logout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login");
+        },
+        onError: (ctx) => {
+          console.error(ctx.error);
+          if (ctx.error instanceof Error) {
+            toast.error(ctx.error.message);
+          }
+        },
+      },
+    });
+  };
   return (
     <header className="border-border/40 bg-background/80 sticky top-0 z-40 w-full border-b backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -21,12 +44,33 @@ export const Header = () => {
             variant="ghost"
             size="sm"
             className="text-muted-foreground hover:text-destructive flex items-center gap-2 px-3"
+            onClick={() => startTransition(logout)}
+            disabled={isPending}
           >
-            <LogOut className="h-4 w-4" />
+            {isPending ? <Spinner /> : <LogOut className="h-4 w-4" />}
             <span className="hidden text-xs font-bold tracking-widest uppercase sm:inline">
               Logout
             </span>
           </Button>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export const HeaderSkeleton = () => {
+  return (
+    <header className="border-border/40 bg-background/80 sticky top-0 z-40 w-full border-b backdrop-blur-md">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-8 rounded-md" />
+          <Skeleton className="h-6 w-24" />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-9 w-9 rounded-md" />
+          <div className="bg-border mx-2 h-4 w-px" />
+          <Skeleton className="h-9 w-20 rounded-md" />
         </div>
       </div>
     </header>

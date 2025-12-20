@@ -1,10 +1,14 @@
-import { Card } from "@/components/ui/card";
+"use client";
 import { Button } from "@/components/ui/button";
-import { Plus, FileCode } from "lucide-react";
+import { Plus } from "lucide-react";
 import { CopyRight } from "@/components/CopyRight";
-import { Header } from "@/components/Header";
+import { Header, HeaderSkeleton } from "@/components/Header";
+import { UploadCard } from "@/components/SharedCards/UploadCard";
+import { MainContentSkeleton } from "@/components/SharedCards/MainContentSkeleton";
+import { redirect } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 
-export default function Page() {
+function MainPage() {
   return (
     <div className="bg-background text-foreground flex min-h-screen flex-col">
       {/* Header Area */}
@@ -23,19 +27,7 @@ export default function Page() {
 
         {/* Empty State / Content Grid Placeholder */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="border-border/50 hover:border-primary/30 group flex cursor-pointer flex-col items-center justify-center space-y-4 border-2 border-dashed bg-transparent p-12 text-center transition-colors">
-            <div className="bg-muted group-hover:bg-primary/10 rounded-full p-4 transition-colors">
-              <FileCode className="text-muted-foreground group-hover:text-primary h-8 w-8 transition-colors" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-sm font-bold tracking-tight uppercase">
-                コンテンツがありません
-              </h3>
-              <p className="text-muted-foreground text-xs tracking-tighter">
-                新しいHTMLをアップロードして共有を開始してください。
-              </p>
-            </div>
-          </Card>
+          <UploadCard />
         </div>
       </main>
 
@@ -43,3 +35,23 @@ export default function Page() {
     </div>
   );
 }
+
+const MainPageSkeleton = () => {
+  return (
+    <div className="bg-background text-foreground flex min-h-screen flex-col">
+      <HeaderSkeleton />
+      <MainContentSkeleton />
+      <CopyRight />
+    </div>
+  );
+};
+
+const Page = () => {
+  const { isPending } = useSession();
+
+  if (isPending) return <MainPageSkeleton />;
+
+  return <MainPage />;
+};
+
+export default Page;
