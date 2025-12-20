@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { passkey } from "@better-auth/passkey";
 
 // 从 BETTER_AUTH_URL 提取 rpID（hostname）
-const getRelyingPartyID = () => {
+export const getRelyingPartyID = () => {
   const url = process.env.BETTER_AUTH_URL as string;
   try {
     const hostname = new URL(url).hostname;
@@ -31,7 +31,7 @@ export const auth = betterAuth({
       origin: process.env.BETTER_AUTH_URL as string,
       authenticatorSelection: {
         authenticatorAttachment: "cross-platform", // 使用跨平台认证器（如手机）
-        residentKey: "preferred", // 推荐但不强制存储凭证
+        residentKey: "required", // 推荐但不强制存储凭证
         userVerification: "preferred", // 推荐但不强制生物识别
       },
     }),
