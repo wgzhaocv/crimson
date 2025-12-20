@@ -7,10 +7,11 @@ import {
 import { ThemeToggle } from "@/components/theme-toggle";
 import { CopyRight } from "@/components/Layout/CopyRight";
 import { LoginCardContent } from "./components/LoginCard";
+import { UserCount } from "./components/UserCount";
 
 const LoginPage = () => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center">
+    <div className="flex h-svh flex-col items-center justify-center">
       {/* Theme Toggle */}
       <div className="fixed top-6 right-6 z-50">
         <ThemeToggle />
@@ -28,7 +29,9 @@ const LoginPage = () => {
           </div>
         </CardHeader>
 
-        <LoginCardContent />
+        <LoginCardContent>
+          <UserCount />
+        </LoginCardContent>
       </Card>
 
       <CopyRight />

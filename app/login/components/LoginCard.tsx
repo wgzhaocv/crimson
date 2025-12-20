@@ -3,10 +3,14 @@
 import { GoogleLogin } from "@/components/AuthButton/GoogleLogin";
 import { PasskeyLogin } from "@/components/AuthButton/PasskeyLogin";
 import { CardContent } from "@/components/ui/card";
-import { AlertCircle, MailX, Users } from "lucide-react";
+import { AlertCircle, MailX } from "lucide-react";
 import { useState } from "react";
 
-export const LoginCardContent = () => {
+export const LoginCardContent = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [error, setError] = useState<string | null>(null);
   return (
     <CardContent className="grid gap-6 px-6 pb-6">
@@ -31,7 +35,7 @@ export const LoginCardContent = () => {
           <div className="flex items-center justify-center gap-2 opacity-40">
             <MailX className="h-3 w-3" />
             <span className="text-[9px] font-bold tracking-wider uppercase">
-              メールの送信はしません。
+              メールの送信はしません
             </span>
           </div>
         </div>
@@ -52,12 +56,7 @@ export const LoginCardContent = () => {
       </div>
 
       {/* 使用统计 */}
-      <div className="text-muted-foreground/50 flex items-center justify-center gap-2 pt-2">
-        <Users className="h-3 w-3" />
-        <span className="text-[10px] font-bold tracking-wide">
-          100+ 人が自分のHTMLを共有中
-        </span>
-      </div>
+      {children}
     </CardContent>
   );
 };

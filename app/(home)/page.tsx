@@ -5,11 +5,12 @@ import { CopyRight } from "@/components/Layout/CopyRight";
 import { Header } from "@/components/Layout/Header";
 import { UploadCard } from "@/components/SharedCards/UploadCard";
 import { useSession } from "@/lib/auth-client";
+import { MainBg } from "@/components/Layout/MainBg";
 
 function MainPage() {
   const session = useSession();
   return (
-    <>
+    <MainBg>
       {/* Header Area */}
       <Header />
       {/* Main Content Area */}
@@ -31,7 +32,7 @@ function MainPage() {
       </main>
 
       <CopyRight />
-    </>
+    </MainBg>
   );
 }
 
