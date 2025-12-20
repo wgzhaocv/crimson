@@ -28,7 +28,7 @@ export const AddShare = () => {
     const title = formData.get("title");
     const accessType = formData.get("accessType");
     const pin = formData.get("pin");
-    console.log(formData);
+    console.log(Object.fromEntries(formData));
     toast.success(html + " " + title + " " + accessType + " " + pin);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));

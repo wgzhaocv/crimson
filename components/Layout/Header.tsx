@@ -37,7 +37,7 @@ export const Header = () => {
           >
             {isPending ? <Spinner /> : <LogOut className="h-4 w-4" />}
             <span className="hidden text-xs font-bold tracking-widest uppercase sm:inline">
-              Logout
+              ログアウト
             </span>
           </Button>
         </div>
