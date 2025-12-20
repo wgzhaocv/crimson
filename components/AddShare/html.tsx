@@ -41,7 +41,7 @@ export const HtmlSection = () => {
   return (
     <Field>
       <div className="mb-1 flex items-center justify-between">
-        <FieldLabel htmlFor="html-body">HTML内容</FieldLabel>
+        <FieldLabel htmlFor="html">HTML内容</FieldLabel>
         <div className="flex gap-2">
           <input
             type="file"
@@ -74,7 +74,8 @@ export const HtmlSection = () => {
       </div>
 
       <Textarea
-        id="html-body"
+        id="html"
+        name="html"
         value={htmlContent}
         onChange={(e) => setHtmlContent(e.target.value)}
         placeholder="ここにHTMLコードを入力してください..."

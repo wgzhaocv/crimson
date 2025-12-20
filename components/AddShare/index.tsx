@@ -28,7 +28,7 @@ export const AddShare = () => {
     const title = formData.get("title");
     const accessType = formData.get("accessType");
     const pin = formData.get("pin");
-    console.log(html, title, accessType, pin);
+    console.log(formData);
     toast.success(html + " " + title + " " + accessType + " " + pin);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -73,9 +73,10 @@ export const AddShare = () => {
 
               {/* ページタイトル */}
               <Field>
-                <FieldLabel htmlFor="html-title">タイトル</FieldLabel>
+                <FieldLabel htmlFor="title">タイトル</FieldLabel>
                 <Input
-                  id="html-title"
+                  id="title"
+                  name="title"
                   placeholder="例: マイ・ポートフォリオ 2024"
                   className="h-11"
                 />
@@ -85,7 +86,7 @@ export const AddShare = () => {
 
           <DialogFooter
             className={cn(
-              "bg-muted/30 flex flex-row items-center justify-end gap-2 border-t px-6 py-4",
+              "bg-muted/30 flex flex-row items-center justify-end gap-2 px-8 pb-4",
             )}
           >
             <Button

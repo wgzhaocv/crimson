@@ -116,6 +116,7 @@ export const PinCodeInput: React.FC<PinCodeInputProps> = ({
               inputRefs.current[index] = el;
             }}
             type="text"
+            name={`pin-${index}`}
             inputMode="numeric"
             autoComplete="one-time-code"
             pattern="\d{1}"

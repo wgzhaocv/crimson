@@ -57,6 +57,7 @@ export const AccessTypeSection = () => {
       <Field>
         <FieldLabel className="mb-2 block">公開範囲の設定</FieldLabel>
         <RadioGroup
+          name="accessType"
           defaultValue="public"
           onValueChange={(value) => setAccessType(value as string)}
           className="grid grid-cols-3 gap-3"
