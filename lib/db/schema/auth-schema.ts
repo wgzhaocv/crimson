@@ -112,7 +112,6 @@ export const userRelations = relations(user, ({ many }) => ({
   shares: many(share),
 }));
 
-
 export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, {
     fields: [session.userId],

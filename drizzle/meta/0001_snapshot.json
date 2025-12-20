@@ -110,12 +110,8 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -234,12 +230,8 @@
           "name": "passkey_user_id_user_id_fk",
           "tableFrom": "passkey",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -326,12 +318,8 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -341,9 +329,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -407,9 +393,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -638,12 +622,8 @@
           "name": "share_owner_id_user_id_fk",
           "tableFrom": "share",
           "tableTo": "user",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -707,12 +687,8 @@
           "name": "share_daily_stat_share_id_share_id_fk",
           "tableFrom": "share_daily_stat",
           "tableTo": "share",
-          "columnsFrom": [
-            "share_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["share_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -814,12 +790,8 @@
           "name": "share_view_share_id_share_id_fk",
           "tableFrom": "share_view",
           "tableTo": "share",
-          "columnsFrom": [
-            "share_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["share_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -835,11 +807,7 @@
     "public.access_type": {
       "name": "access_type",
       "schema": "public",
-      "values": [
-        "public",
-        "password",
-        "private"
-      ]
+      "values": ["public", "password", "private"]
     }
   },
   "schemas": {},

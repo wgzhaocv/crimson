@@ -23,7 +23,8 @@ export const errorMessages: Record<ErrorCode, string> = {
   PASSWORD_TOO_SHORT: "パスワードが短すぎます",
   PASSWORD_TOO_LONG: "パスワードが長すぎます",
   USER_ALREADY_EXISTS: "このメールアドレスは既に登録されています",
-  USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: "このメールアドレスは既に使用されています。別のメールアドレスをご利用ください",
+  USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL:
+    "このメールアドレスは既に使用されています。別のメールアドレスをご利用ください",
   EMAIL_CAN_NOT_BE_UPDATED: "メールアドレスを更新できません",
   CREDENTIAL_ACCOUNT_NOT_FOUND: "認証情報が見つかりません",
   SESSION_EXPIRED: "セッションの有効期限が切れました。再度ログインしてください",
@@ -32,7 +33,8 @@ export const errorMessages: Record<ErrorCode, string> = {
   USER_ALREADY_HAS_PASSWORD: "既にパスワードが設定されています",
 
   CHALLENGE_NOT_FOUND: "認証チャレンジが見つかりません",
-  YOU_ARE_NOT_ALLOWED_TO_REGISTER_THIS_PASSKEY: "このパスキーを登録する権限がありません",
+  YOU_ARE_NOT_ALLOWED_TO_REGISTER_THIS_PASSKEY:
+    "このパスキーを登録する権限がありません",
   FAILED_TO_VERIFY_REGISTRATION: "パスキーの登録確認に失敗しました",
   PASSKEY_NOT_FOUND: "パスキーが見つかりません",
   AUTHENTICATION_FAILED: "認証に失敗しました",

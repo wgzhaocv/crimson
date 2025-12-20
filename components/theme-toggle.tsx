@@ -21,14 +21,14 @@ const useThemeStore = create<ThemeState>()(
           if (typeof window !== "undefined") {
             document.documentElement.classList.toggle(
               "dark",
-              newTheme === "dark"
+              newTheme === "dark",
             );
           }
           return { theme: newTheme };
         }),
     }),
-    { name: "theme-storage" }
-  )
+    { name: "theme-storage" },
+  ),
 );
 
 export function ThemeToggle() {
@@ -54,7 +54,7 @@ export function ThemeToggle() {
 
     const endRadius = Math.hypot(
       Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
+      Math.max(y, window.innerHeight - y),
     );
 
     const transition = document.startViewTransition(() => {
@@ -73,7 +73,7 @@ export function ThemeToggle() {
           duration: 600,
           easing: "ease-in-out",
           pseudoElement: "::view-transition-new(root)",
-        }
+        },
       );
     });
   };
@@ -90,9 +90,9 @@ export function ThemeToggle() {
       className="group/toggle relative"
       aria-label="テーマを切り替え"
     >
-      <Sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-muted-foreground group-hover/toggle:text-primary" />
+      <Sun className="text-muted-foreground group-hover/toggle:text-primary scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
 
-      <Moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-muted-foreground group-hover/toggle:text-primary dark:drop-shadow-[0_0_8px_var(--primary)]" />
+      <Moon className="text-muted-foreground group-hover/toggle:text-primary absolute scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0 dark:drop-shadow-[0_0_8px_var(--primary)]" />
 
       <span className="sr-only">テーマを切り替え</span>
     </Button>

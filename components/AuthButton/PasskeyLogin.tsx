@@ -41,7 +41,7 @@ export const PasskeyLogin = ({
 
   return (
     <Button
-      className="w-full h-12 text-sm font-bold bg-primary text-primary-foreground hover:opacity-90 shadow-md shadow-primary/20 dark:shadow-[0_8px_30px_rgba(var(--primary),0.4)] transition-all duration-300"
+      className="bg-primary text-primary-foreground shadow-primary/20 h-12 w-full text-sm font-bold shadow-md transition-all duration-300 hover:opacity-90 dark:shadow-[0_8px_30px_rgba(var(--primary),0.4)]"
       onClick={() => startTransition(handlePasskeySignIn)}
       disabled={isPending}
     >

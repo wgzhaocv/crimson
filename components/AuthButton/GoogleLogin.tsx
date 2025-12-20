@@ -24,14 +24,14 @@ export const GoogleLogin = ({
         onError(ctx) {
           setError(getErrorMessage(ctx.error.code));
         },
-      }
+      },
     );
   };
 
   return (
     <Button
       variant="outline"
-      className="w-full h-12 text-sm font-bold border-border/60 bg-transparent hover:bg-accent transition-all duration-300"
+      className="border-border/60 hover:bg-accent h-12 w-full bg-transparent text-sm font-bold transition-all duration-300"
       onClick={() => startTransition(handleGoogleSignIn)}
       disabled={isPending}
     >

@@ -6,6 +6,7 @@
     "dev": "bun --bun next dev",
     "build": "bun --bun next build",
     "start": "bun --bun next start",
+    "format": "prettier --write .",
     "lint": "eslint"
   },
   "dependencies": {
@@ -38,6 +39,8 @@
     "drizzle-kit": "^0.31.8",
     "eslint": "^9",
     "eslint-config-next": "16.0.10",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"
