@@ -1,7 +1,6 @@
 "use client";
 
 import { GoogleLogin } from "@/components/AuthButton/GoogleLogin";
-import { PasskeyLogin } from "@/components/AuthButton/PasskeyLogin";
 import { CardContent } from "@/components/ui/card";
 import { AlertCircle, MailX } from "lucide-react";
 import { useState } from "react";
@@ -39,20 +38,6 @@ export const LoginCardContent = ({
             </span>
           </div>
         </div>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="border-border/40 w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-[10px] font-black uppercase">
-            <span className="bg-card text-muted-foreground/60 px-4">
-              または
-            </span>
-          </div>
-        </div>
-
-        {/* Passkey Login */}
-        <PasskeyLogin setError={setError} />
       </div>
 
       {/* 使用统计 */}
