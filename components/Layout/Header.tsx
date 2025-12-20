@@ -31,7 +31,7 @@ export const Header = () => {
           <Button
             variant="ghost"
             size="sm"
-            className="text-muted-foreground hover:text-destructive flex items-center gap-2 px-3"
+            className="text-muted-foreground hover:text-destructive flex items-center gap-2 px-3 transition-all duration-300"
             onClick={logout}
             disabled={isPending}
           >

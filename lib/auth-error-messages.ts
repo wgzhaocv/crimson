@@ -31,15 +31,6 @@ export const errorMessages: Record<ErrorCode, string> = {
   FAILED_TO_UNLINK_LAST_ACCOUNT: "最後のアカウントの連携を解除できません",
   ACCOUNT_NOT_FOUND: "アカウントが見つかりません",
   USER_ALREADY_HAS_PASSWORD: "既にパスワードが設定されています",
-
-  CHALLENGE_NOT_FOUND: "認証チャレンジが見つかりません",
-  YOU_ARE_NOT_ALLOWED_TO_REGISTER_THIS_PASSKEY:
-    "このパスキーを登録する権限がありません",
-  FAILED_TO_VERIFY_REGISTRATION: "パスキーの登録確認に失敗しました",
-  PASSKEY_NOT_FOUND: "パスキーが見つかりません",
-  AUTHENTICATION_FAILED: "認証に失敗しました",
-  UNABLE_TO_CREATE_SESSION: "セッションを作成できませんでした",
-  FAILED_TO_UPDATE_PASSKEY: "パスキーの登録に失敗しました",
 };
 
 export function getErrorMessage(code?: string): string {
