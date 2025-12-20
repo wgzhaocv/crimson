@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/providers/theme-provider";
 
 export const metadata: Metadata = {
   title: "Crimson",
-  description: "HTMLスニペットを共有するためのプラットフォーム",
+  description: "HTMLを共有するためのプラットフォーム",
 };
 
 export default function RootLayout({
