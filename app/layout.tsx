@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { MainBg } from "@/components/Layout/MainBg";
 
 export const metadata: Metadata = {
   title: "Crimson",
@@ -15,7 +16,14 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <MainBg>{children}</MainBg>
+        </ThemeProvider>
       </body>
     </html>
   );

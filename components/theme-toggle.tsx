@@ -1,51 +1,27 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
-interface ThemeState {
-  theme: "light" | "dark";
-  toggleTheme: () => void;
-}
-
-const useThemeStore = create<ThemeState>()(
-  persist(
-    (set) => ({
-      theme: "dark",
-      toggleTheme: () =>
-        set((state) => {
-          const newTheme = state.theme === "light" ? "dark" : "light";
-          if (typeof window !== "undefined") {
-            document.documentElement.classList.toggle(
-              "dark",
-              newTheme === "dark",
-            );
-          }
-          return { theme: newTheme };
-        }),
-    }),
-    { name: "theme-storage" },
-  ),
-);
-
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useThemeStore();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
+  }, []);
 
   const handleToggle = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const newTheme = resolvedTheme === "dark" ? "light" : "dark";
+
+    // 检查是否支持 View Transition API
     if (
       !document.startViewTransition ||
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     ) {
-      toggleTheme();
+      setTheme(newTheme);
       return;
     }
 
@@ -58,7 +34,7 @@ export function ThemeToggle() {
     );
 
     const transition = document.startViewTransition(() => {
-      toggleTheme();
+      setTheme(newTheme);
     });
 
     transition.ready.then(() => {

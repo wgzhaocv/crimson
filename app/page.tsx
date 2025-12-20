@@ -1,16 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { CopyRight } from "@/components/CopyRight";
-import { Header, HeaderSkeleton } from "@/components/Header";
+import { CopyRight } from "@/components/Layout/CopyRight";
+import { Header } from "@/components/Layout/Header";
 import { UploadCard } from "@/components/SharedCards/UploadCard";
-import { MainContentSkeleton } from "@/components/SharedCards/MainContentSkeleton";
-import { redirect } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
+import MainPageSkeleton from "./loading";
 
 function MainPage() {
   return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col">
+    <>
       {/* Header Area */}
       <Header />
       {/* Main Content Area */}
@@ -32,19 +31,9 @@ function MainPage() {
       </main>
 
       <CopyRight />
-    </div>
+    </>
   );
 }
-
-const MainPageSkeleton = () => {
-  return (
-    <div className="bg-background text-foreground flex min-h-screen flex-col">
-      <HeaderSkeleton />
-      <MainContentSkeleton />
-      <CopyRight />
-    </div>
-  );
-};
 
 const Page = () => {
   const { isPending } = useSession();

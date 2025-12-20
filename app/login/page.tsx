@@ -12,22 +12,16 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { GoogleLogin } from "@/components/AuthButton/GoogleLogin";
 import { PasskeyLogin } from "@/components/AuthButton/PasskeyLogin";
 import { AlertCircle, MailX, Users } from "lucide-react";
-import { CopyRight } from "@/components/CopyRight";
+import { CopyRight } from "@/components/Layout/CopyRight";
 
 const LoginPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <div className="bg-background text-foreground relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center">
       {/* Theme Toggle */}
       <div className="fixed top-6 right-6 z-50">
         <ThemeToggle />
-      </div>
-
-      {/* Background Decor */}
-      <div className="pointer-events-none fixed inset-0 -z-10 opacity-40 dark:opacity-100">
-        <div className="bg-primary/5 dark:bg-primary/20 absolute top-[-5%] left-[-5%] h-[40%] w-[40%] rounded-full blur-[80px] dark:blur-[120px]" />
-        <div className="bg-primary/5 dark:bg-primary/20 absolute right-[-5%] bottom-[-5%] h-[40%] w-[40%] rounded-full blur-[80px] dark:blur-[120px]" />
       </div>
 
       <Card className="border-border/50 bg-card/80 shadow-primary/5 animate-in slide-in-from-bottom-20 w-full max-w-[400px] shadow-lg backdrop-blur-2xl duration-500 dark:shadow-2xl dark:shadow-black/60">
