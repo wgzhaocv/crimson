@@ -16,9 +16,11 @@ export const genRegOptions = async () => {
     userName: displayName,
     userID: userIdBuffer,
     authenticatorSelection: {
-      userVerification: "required", // 强制要求用户验证
-      residentKey: "preferred", // 优先但不强制常驻密钥
+      userVerification: "required",
+      residentKey: "preferred",
     },
+    // 优先提示使用手机等远程设备（Chrome 128+ 支持，其他浏览器可能忽略）
+    preferredAuthenticatorType: "remoteDevice",
   });
 
   // 存储到 Redis，60秒过期

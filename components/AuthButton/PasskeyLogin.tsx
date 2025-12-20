@@ -139,6 +139,11 @@ export const PasskeyLogin = ({
           </>
         )}
       </button>
+
+      {/* Hint - Chrome 会优先显示 Google Password Manager */}
+      <p className="text-muted-foreground/60 text-center text-[10px]">
+        他のデバイスで認証する場合は、表示されるダイアログで別の方法を選択してください
+      </p>
     </div>
   );
 };

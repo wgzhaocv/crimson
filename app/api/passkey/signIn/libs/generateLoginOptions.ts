@@ -17,5 +17,10 @@ export const generateLoginOptions = async () => {
       createdAt: Date.now(),
     }),
   );
-  return options;
+
+  // 添加 hints，优先提示使用手机等远程设备（Chrome 128+ 支持）
+  return {
+    ...options,
+    hints: ["hybrid", "security-key", "client-device"] as const,
+  };
 };
