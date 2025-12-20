@@ -60,9 +60,9 @@ export const HeaderSkeleton = () => {
 
         {/* 右侧操作区 */}
         <div className="flex items-center gap-2">
-          <Skeleton className="h-9 w-9 rounded-md bg-zinc-300/50 dark:bg-zinc-700/60" />
+          <Skeleton className="h-9 w-9 animate-pulse bg-zinc-300/50 dark:bg-zinc-700/60" />
           <div className="bg-border/40 mx-2 h-4 w-px" />
-          <Skeleton className="h-9 w-24 rounded-md bg-zinc-300/50 dark:bg-zinc-700/60" />
+          <Skeleton className="h-9 w-24 animate-pulse bg-zinc-300/50 dark:bg-zinc-700/60" />
         </div>
       </div>
     </header>

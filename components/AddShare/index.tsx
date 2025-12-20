@@ -23,7 +23,13 @@ import { useFormStatus } from "react-dom";
 
 export const AddShare = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const onSave = async () => {
+  const onSave = async (formData: FormData) => {
+    const html = formData.get("html");
+    const title = formData.get("title");
+    const accessType = formData.get("accessType");
+    const pin = formData.get("pin");
+    console.log(html, title, accessType, pin);
+    toast.success(html + " " + title + " " + accessType + " " + pin);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.success("保存しました");
@@ -39,15 +45,17 @@ export const AddShare = () => {
   };
   return (
     <Dialog onOpenChange={setIsOpen} open={isOpen}>
-      <DialogTrigger>
-        <Button className="shadow-primary/20 bg-primary text-primary-foreground flex h-12 items-center gap-2 px-6 font-black tracking-widest uppercase shadow-lg transition-all hover:opacity-90">
-          <Plus className="h-5 w-5" />
-          HTMLを追加
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button className="shadow-primary/20 bg-primary text-primary-foreground flex h-12 items-center gap-2 px-6 font-black tracking-widest uppercase shadow-lg transition-all hover:opacity-90">
+            <Plus className="h-5 w-5" />
+            HTMLを追加
+          </Button>
+        }
+      ></DialogTrigger>
 
       <DialogContent className="bg-card overflow-hidden border-none p-0 shadow-2xl sm:max-w-[550px]">
-        <form onSubmit={(e) => e.preventDefault()} action={onSave}>
+        <form action={onSave}>
           <DialogHeader className="p-8 pb-4">
             <DialogTitle>HTMLをアップロード</DialogTitle>
             <DialogDescription>

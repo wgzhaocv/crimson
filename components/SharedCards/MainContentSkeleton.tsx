@@ -1,5 +1,3 @@
-import { Skeleton } from "../ui/skeleton";
-
 export const MainContentSkeleton = () => {
   return (
     <main className="container mx-auto flex-1 px-4 py-8">
@@ -7,7 +5,7 @@ export const MainContentSkeleton = () => {
         <div className="space-y-1"></div>
 
         {/* Add HTML Fragment Button Skeleton */}
-        <Skeleton className="h-12 w-40 rounded-md" />
+        <div className="bg-foreground/10 h-12 w-40 animate-pulse" />
       </div>
 
       {/* Content Grid Placeholder */}
@@ -21,5 +19,5 @@ export const MainContentSkeleton = () => {
 };
 
 const UploadCardSkeleton = () => {
-  return <div className="bg-foreground/10 h-48 animate-pulse rounded-lg" />;
+  return <div className="bg-foreground/10 h-48 animate-pulse" />;
 };

@@ -59,23 +59,6 @@
   --input: oklch(0.78 0.02 25.4);
   --ring: oklch(0.55 0.23 25.4 / 0.4);
   --radius: 0.75rem;
-
-  /* Sonner 通知颜色 */
-  --success-bg: oklch(0.95 0.08 145);
-  --success-text: oklch(0.35 0.15 145);
-  --success-border: oklch(0.9 0.1 145);
-
-  --error-bg: oklch(0.97 0.03 25.4);
-  --error-text: oklch(0.55 0.23 25.4);
-  --error-border: oklch(0.92 0.05 25.4);
-
-  --info-bg: oklch(0.95 0.05 245);
-  --info-text: oklch(0.35 0.15 245);
-  --info-border: oklch(0.9 0.05 245);
-
-  --warning-bg: oklch(0.97 0.08 85);
-  --warning-text: oklch(0.4 0.15 85);
-  --warning-border: oklch(0.92 0.1 85);
 }
 
 .dark {
@@ -108,23 +91,6 @@
   --border: oklch(0.4 0.03 25.4);
   --input: oklch(0.4 0.03 25.4);
   --ring: oklch(0.6 0.25 25.4 / 0.5);
-
-  /* Sonner 暗色模式通知颜色 */
-  --success-bg: oklch(0.18 0.04 145);
-  --success-text: oklch(0.85 0.12 145);
-  --success-border: oklch(0.25 0.08 145);
-
-  --error-bg: oklch(0.18 0.04 25.4);
-  --error-text: oklch(0.85 0.15 25.4);
-  --error-border: oklch(0.3 0.1 25.4);
-
-  --info-bg: oklch(0.18 0.04 245);
-  --info-text: oklch(0.85 0.1 245);
-  --info-border: oklch(0.25 0.08 245);
-
-  --warning-bg: oklch(0.18 0.05 85);
-  --warning-text: oklch(0.85 0.12 85);
-  --warning-border: oklch(0.3 0.08 85);
 }
 
 @layer base {
@@ -133,6 +99,74 @@
   }
   body {
     @apply bg-background text-foreground antialiased transition-colors duration-300;
+  }
+
+  /* Sonner Toast 样式 - 亮色模式 */
+  [data-sonner-toast] {
+    background-color: oklch(1 0 0) !important;
+    border: 1px solid oklch(0.78 0.02 25.4) !important;
+    border-radius: 0 !important;
+    color: oklch(0.15 0.02 25) !important;
+  }
+
+  [data-sonner-toast][data-type="success"] {
+    background-color: oklch(0.95 0.06 145) !important;
+    border-color: oklch(0.85 0.1 145) !important;
+    color: oklch(0.3 0.12 145) !important;
+  }
+
+  [data-sonner-toast][data-type="error"] {
+    background-color: oklch(0.97 0.03 25.4) !important;
+    border-color: oklch(0.75 0.15 25.4) !important;
+    color: oklch(0.45 0.2 25.4) !important;
+  }
+
+  [data-sonner-toast][data-type="warning"] {
+    background-color: oklch(0.97 0.06 85) !important;
+    border-color: oklch(0.8 0.12 85) !important;
+    color: oklch(0.4 0.15 85) !important;
+  }
+
+  [data-sonner-toast][data-type="info"] {
+    background-color: oklch(0.95 0.04 245) !important;
+    border-color: oklch(0.8 0.08 245) !important;
+    color: oklch(0.35 0.12 245) !important;
+  }
+
+  [data-sonner-toast] [data-title],
+  [data-sonner-toast] [data-description] {
+    color: inherit !important;
+  }
+
+  /* Sonner Toast 样式 - 暗色模式 */
+  .dark [data-sonner-toast] {
+    background-color: oklch(0.22 0.02 25.4) !important;
+    border-color: oklch(0.4 0.03 25.4) !important;
+    color: oklch(0.95 0.01 25) !important;
+  }
+
+  .dark [data-sonner-toast][data-type="success"] {
+    background-color: oklch(0.22 0.05 145) !important;
+    border-color: oklch(0.4 0.1 145) !important;
+    color: oklch(0.85 0.12 145) !important;
+  }
+
+  .dark [data-sonner-toast][data-type="error"] {
+    background-color: oklch(0.22 0.06 25.4) !important;
+    border-color: oklch(0.45 0.15 25.4) !important;
+    color: oklch(0.8 0.18 25.4) !important;
+  }
+
+  .dark [data-sonner-toast][data-type="warning"] {
+    background-color: oklch(0.22 0.06 85) !important;
+    border-color: oklch(0.45 0.12 85) !important;
+    color: oklch(0.85 0.14 85) !important;
+  }
+
+  .dark [data-sonner-toast][data-type="info"] {
+    background-color: oklch(0.22 0.05 245) !important;
+    border-color: oklch(0.4 0.1 245) !important;
+    color: oklch(0.85 0.1 245) !important;
   }
 }
 
