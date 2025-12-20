@@ -74,8 +74,8 @@ const LoginPage = () => {
                 <span className="w-full border-t border-border/40" />
               </div>
               <div className="relative flex justify-center text-[10px] uppercase font-black">
-                <span className="bg-card px-4 text-muted-foreground/60 tracking-[0.4em]">
-                  or
+                <span className="bg-card px-4 text-muted-foreground/60">
+                  または
                 </span>
               </div>
             </div>
