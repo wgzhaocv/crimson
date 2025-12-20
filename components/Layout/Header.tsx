@@ -5,28 +5,15 @@ import { LogOut } from "lucide-react";
 import { LogoIcon } from "../Icons/LogoIcon";
 import { ThemeToggle } from "../theme-toggle";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useTransition } from "react";
+import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 
 export const Header = () => {
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
   const logout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
-        },
-        onError: (ctx) => {
-          console.error(ctx.error);
-          if (ctx.error instanceof Error) {
-            toast.error(ctx.error.message);
-          }
-        },
-      },
-    });
+    setIsPending(true);
+    await authClient.signOut();
+    window.location.href = "/login"; // 最可靠
   };
   return (
     <header className="border-border/40 bg-background/80 sticky top-0 z-40 w-full border-b backdrop-blur-md">
@@ -45,7 +32,7 @@ export const Header = () => {
             variant="ghost"
             size="sm"
             className="text-muted-foreground hover:text-destructive flex items-center gap-2 px-3"
-            onClick={() => startTransition(logout)}
+            onClick={logout}
             disabled={isPending}
           >
             {isPending ? <Spinner /> : <LogOut className="h-4 w-4" />}

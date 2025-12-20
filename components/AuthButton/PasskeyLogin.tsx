@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { authClient } from "@/lib/auth-client";
 import { Spinner } from "../ui/spinner";
@@ -12,11 +12,13 @@ export const PasskeyLogin = ({
 }: {
   setError: (error: string) => void;
 }) => {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
   const router = useRouter();
 
   const handlePasskeySignIn = async () => {
+    setIsPending(true);
     const { data, error } = await authClient.signIn.passkey();
+    setIsPending(false);
 
     if (error) {
       const message = error.message || "";
@@ -42,7 +44,7 @@ export const PasskeyLogin = ({
   return (
     <Button
       className="bg-primary text-primary-foreground shadow-primary/20 h-12 w-full text-sm font-bold shadow-md transition-all duration-300 hover:opacity-90 dark:shadow-[0_8px_30px_rgba(var(--primary),0.4)]"
-      onClick={() => startTransition(handlePasskeySignIn)}
+      onClick={handlePasskeySignIn}
       disabled={isPending}
     >
       {isPending ? <Spinner /> : "パスキーでログイン"}

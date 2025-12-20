@@ -2,7 +2,7 @@
 
 import { GoogleIcon } from "@/components/Icons/GoogleIcon";
 import { Button } from "../ui/button";
-import { useTransition } from "react";
+import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Spinner } from "../ui/spinner";
 import { getErrorMessage } from "@/lib/auth-error-messages";
@@ -12,9 +12,10 @@ export const GoogleLogin = ({
 }: {
   setError: (error: string) => void;
 }) => {
-  const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
 
   const handleGoogleSignIn = async () => {
+    setIsPending(true);
     await authClient.signIn.social(
       {
         provider: "google",
@@ -23,6 +24,7 @@ export const GoogleLogin = ({
       {
         onError(ctx) {
           setError(getErrorMessage(ctx.error.code));
+          setIsPending(false);
         },
       },
     );
@@ -32,7 +34,7 @@ export const GoogleLogin = ({
     <Button
       variant="outline"
       className="border-border/60 hover:bg-accent h-12 w-full bg-transparent text-sm font-bold transition-all duration-300"
-      onClick={() => startTransition(handleGoogleSignIn)}
+      onClick={handleGoogleSignIn}
       disabled={isPending}
     >
       <div className="mr-3">
