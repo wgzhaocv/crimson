@@ -18,11 +18,16 @@ import {
 
 const redirectToRenderPage = (base62Id: string) => {
   const token = genOneTimeToken(base62Id);
-  return NextResponse.redirect(
+  const response = NextResponse.redirect(
     `${process.env.RENDER_URL}/share/${base62Id}?token=${token}`,
   );
-};
 
+  // 清除临时 cookie
+  response.cookies.delete("share-state");
+  response.cookies.delete("share-pin");
+
+  return response;
+};
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -97,7 +102,6 @@ export async function proxy(request: NextRequest) {
   }
 
   const redirectResponse = redirectToRenderPage(base62Id);
-  redirectResponse.cookies.delete("share-pin");
   setVerifyCookie(redirectResponse, base62Id);
   return redirectResponse;
 }
