@@ -51,6 +51,7 @@ export const HtmlSection = () => {
     if (!file) return;
     if (file.type !== "text/html" && !file.name.endsWith(".html")) {
       // 可以在这里添加错误提示，例如：HTMLファイルのみ対応しています
+      toast.error("HTMLファイルのみ対応しています");
       return;
     }
 
