@@ -2,11 +2,25 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { Controller, useWatch } from "react-hook-form";
 
-export const ChangePinField = ({ isEditMode }: { isEditMode: boolean }) => {
+type ChangePinFieldProps = {
+  isEditMode: boolean;
+  initialAccessType?: "public" | "password" | "private";
+};
+
+export const ChangePinField = ({
+  isEditMode,
+  initialAccessType,
+}: ChangePinFieldProps) => {
   const accessType = useWatch({ name: "accessType" });
 
-  // 只在编辑模式 + password 类型时显示
-  if (!isEditMode || accessType !== "password") return null;
+  // 只在编辑模式 + 原本就是 password 类型 + 当前也是 password 时显示
+  // 如果从非 password 改成 password，直接填 pin 即可，不需要显示开关
+  if (
+    !isEditMode ||
+    initialAccessType !== "password" ||
+    accessType !== "password"
+  )
+    return null;
 
   return (
     <Controller

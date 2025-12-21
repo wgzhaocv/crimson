@@ -11,11 +11,16 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { FieldGroup } from "../ui/field";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ShareListItemType } from "../ShareList/ShareCard";
 import { parseHTML } from "@/lib/parseHTML";
 import * as z from "zod";
-import { FormProvider, useForm } from "react-hook-form";
+import {
+  FormProvider,
+  useForm,
+  UseFormReturn,
+  useWatch,
+} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import { HtmlField } from "./components/HtmlField";
@@ -49,26 +54,28 @@ const shareSchema = z
 
 export type ShareFormValues = z.infer<typeof shareSchema>;
 
-export const ShareDialog = ({
-  children,
-  initialData,
-  initialHtml,
-  open: controlledOpen,
-  onOpenChange,
-}: {
-  children: React.ReactElement;
-  initialData?: ShareListItemType;
-  initialHtml?: string;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-}) => {
+// ============ 内部 Hooks ============
+
+/** Dialog 开关状态管理（支持受控/非受控模式） */
+const useDialogState = (
+  controlledOpen?: boolean,
+  onOpenChange?: (open: boolean) => void,
+) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
   const setOpen = isControlled ? onOpenChange! : setInternalOpen;
 
+  return { open, setOpen };
+};
+
+/** 表单初始化与副作用管理 */
+const useShareForm = (
+  open: boolean,
+  initialData?: ShareListItemType,
+  initialHtml?: string,
+) => {
   const isEditMode = !!initialData;
-  const queryClient = useQueryClient();
 
   const form = useForm<ShareFormValues>({
     resolver: zodResolver(shareSchema),
@@ -105,47 +112,101 @@ export const ShareDialog = ({
     }
   }, [initialHtml, form]);
 
-  const onSubmit = async (data: ShareFormValues) => {
-    try {
-      const url = isEditMode ? `/api/share/${initialData.id}` : "/api/share";
-      const method = isEditMode ? "PUT" : "POST";
-
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          html: data.html,
-          title: data.title || null,
-          accessType: data.accessType,
-          changePin: data.changePin,
-          pin: data.pin || null,
-        }),
-      });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        toast.error(result.error ?? "エラーが発生しました");
-        return;
-      }
-
-      toast.success(isEditMode ? "更新しました" : "保存しました");
-      setOpen(false);
-      form.reset();
-
-      // 刷新列表和 content 缓存
-      queryClient.invalidateQueries({ queryKey: ["shares"] });
-      if (isEditMode) {
-        queryClient.invalidateQueries({ queryKey: ["share", initialData.id] });
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("エラーが発生しました");
-      }
+  // 编辑模式下，从非 password 切换到 password 时，自动设置 changePin 为 true
+  const currentAccessType = useWatch({
+    control: form.control,
+    name: "accessType",
+  });
+  useEffect(() => {
+    if (
+      isEditMode &&
+      initialData?.accessType !== "password" &&
+      currentAccessType === "password"
+    ) {
+      form.setValue("changePin", true);
     }
-  };
+  }, [isEditMode, initialData?.accessType, currentAccessType, form]);
+
+  return { form, isEditMode };
+};
+
+/** 表单提交处理 */
+const useShareSubmit = (
+  form: UseFormReturn<ShareFormValues>,
+  initialData?: ShareListItemType,
+  onSuccess?: () => void,
+) => {
+  const isEditMode = !!initialData;
+  const queryClient = useQueryClient();
+
+  const handleSubmit = useCallback(
+    async (data: ShareFormValues) => {
+      try {
+        const url = isEditMode ? `/api/share/${initialData.id}` : "/api/share";
+        const method = isEditMode ? "PUT" : "POST";
+
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            html: data.html,
+            title: data.title || null,
+            accessType: data.accessType,
+            changePin: data.changePin,
+            pin: data.pin || null,
+          }),
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+          toast.error(result.error ?? "エラーが発生しました");
+          return;
+        }
+
+        toast.success(isEditMode ? "更新しました" : "保存しました");
+        onSuccess?.();
+        form.reset();
+
+        // 刷新列表和 content 缓存
+        queryClient.invalidateQueries({ queryKey: ["shares"] });
+        if (isEditMode) {
+          queryClient.invalidateQueries({
+            queryKey: ["share", initialData.id],
+          });
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        } else {
+          toast.error("エラーが発生しました");
+        }
+      }
+    },
+    [isEditMode, initialData, form, queryClient, onSuccess],
+  );
+
+  return handleSubmit;
+};
+
+// ============ 主组件 ============
+
+export const ShareDialog = ({
+  children,
+  initialData,
+  initialHtml,
+  open: controlledOpen,
+  onOpenChange,
+}: {
+  children: React.ReactElement;
+  initialData?: ShareListItemType;
+  initialHtml?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) => {
+  const { open, setOpen } = useDialogState(controlledOpen, onOpenChange);
+  const { form, isEditMode } = useShareForm(open, initialData, initialHtml);
+  const handleSubmit = useShareSubmit(form, initialData, () => setOpen(false));
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
@@ -153,7 +214,7 @@ export const ShareDialog = ({
 
       <DialogContent className="bg-card overflow-hidden border-none p-0 shadow-2xl sm:max-w-[550px]">
         <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
             <DialogHeader className="p-8 pb-4">
               <DialogTitle>
                 HTMLを{isEditMode ? "更新" : "アップロード"}
@@ -168,7 +229,10 @@ export const ShareDialog = ({
                 <HtmlField id={initialData?.id} />
                 <TitleField />
                 <AccessTypeField />
-                <ChangePinField isEditMode={isEditMode} />
+                <ChangePinField
+                  isEditMode={isEditMode}
+                  initialAccessType={initialData?.accessType}
+                />
                 <PincodeField />
               </FieldGroup>
             </div>
