@@ -5,6 +5,7 @@ import { snowflakeToBase62 } from "@/lib/base62";
 import { createShareSchema } from "@/lib/schemas/share";
 import { getSessionOrError, hashPin, parseZodError } from "./utils";
 import { NextResponse } from "next/server";
+import { setShareCache } from "@/lib/redisCache/shareCache";
 
 export async function POST(request: Request) {
   const sessionResult = await getSessionOrError();
@@ -22,15 +23,27 @@ export async function POST(request: Request) {
     const { html, title, accessType, pin } = parsed.data;
     const id = generateSnowflakeId();
     const pinHash = await hashPin(accessType, pin);
+    const now = new Date();
 
-    await db.insert(share).values({
+    const newShare = {
       id,
       ownerId: userId,
       accessType,
       pinHash,
       content: html,
       title,
-    });
+      description: null,
+      coverId: null,
+      contentUpdatedAt: now,
+      viewCount: 0,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    await db.insert(share).values(newShare);
+
+    // 写入缓存
+    await setShareCache(newShare);
 
     return NextResponse.json({ id: snowflakeToBase62(id) });
   } catch (error) {

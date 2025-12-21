@@ -68,6 +68,13 @@ export async function PUT(request: Request, { params }: Params) {
       ? await hashPin(accessType, pin)
       : existingShare.pinHash;
 
+    // 检查核心字段是否有变化
+    const now = new Date();
+    const coreFieldsChanged =
+      html !== existingShare.content ||
+      accessType !== existingShare.accessType ||
+      pinHash !== existingShare.pinHash;
+
     await db
       .update(share)
       .set({
@@ -75,7 +82,8 @@ export async function PUT(request: Request, { params }: Params) {
         title,
         accessType,
         pinHash,
-        updatedAt: new Date(),
+        updatedAt: now,
+        ...(coreFieldsChanged && { contentUpdatedAt: now }),
       })
       .where(eq(share.id, id));
 
