@@ -29,7 +29,7 @@ const parseFormData = (formData: FormData) => ({
   html: formData.get("html") as string | null,
   title: formData.get("title") as string | null,
   accessType: formData.get("accessType") as string | null,
-  pin: formData.get("pin") as string | null,
+  pin: Array.from({ length: 6 }, (_, i) => formData.get(`pin-${i}`)).join(""),
 });
 
 export async function POST(request: Request) {

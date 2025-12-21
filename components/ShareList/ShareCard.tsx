@@ -8,8 +8,24 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Globe, Lock, Eye, Calendar, KeyRound } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import {
+  Globe,
+  Lock,
+  Eye,
+  Calendar,
+  KeyRound,
+  ExternalLink,
+  Link2,
+  Pencil,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export type Share = {
   id: string;
@@ -38,9 +54,31 @@ const accessTypeConfig = {
   },
 };
 
+// 基于 id 生成稳定的随机渐变色
+const gradientPresets = [
+  "from-rose-400/30 via-pink-300/20 to-purple-400/30",
+  "from-amber-400/30 via-orange-300/20 to-red-400/30",
+  "from-emerald-400/30 via-teal-300/20 to-cyan-400/30",
+  "from-blue-400/30 via-indigo-300/20 to-violet-400/30",
+  "from-fuchsia-400/30 via-pink-300/20 to-rose-400/30",
+  "from-cyan-400/30 via-sky-300/20 to-blue-400/30",
+  "from-lime-400/30 via-green-300/20 to-emerald-400/30",
+  "from-violet-400/30 via-purple-300/20 to-fuchsia-400/30",
+];
+
+const getGradient = (id: string) => {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash << 5) - hash + id.charCodeAt(i);
+    hash |= 0;
+  }
+  return gradientPresets[Math.abs(hash) % gradientPresets.length];
+};
+
 export const ShareCard = ({ share }: { share: Share }) => {
   const config = accessTypeConfig[share.accessType];
   const AccessIcon = config.icon;
+  const gradient = getGradient(share.id);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -49,6 +87,28 @@ export const ShareCard = ({ share }: { share: Share }) => {
       month: "short",
       day: "numeric",
     });
+  };
+
+  const shareUrl = `${window.location.origin}/s/${share.id}`;
+
+  const handleOpenInNewTab = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(shareUrl, "_blank");
+  };
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("リンクをコピーしました");
+    } catch {
+      toast.error("コピーに失敗しました");
+    }
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // TODO: 編集モーダルを開く
   };
 
   return (
@@ -62,8 +122,62 @@ export const ShareCard = ({ share }: { share: Share }) => {
       </CardHeader>
 
       <CardContent>
-        <div className="bg-muted/50 flex aspect-video items-center justify-center rounded-sm">
-          <span className="text-muted-foreground text-xs">プレビュー</span>
+        <div
+          className={cn(
+            "relative aspect-video overflow-hidden rounded-sm bg-linear-to-br",
+            gradient,
+          )}
+        >
+          {/* Action Buttons */}
+          <div className="bg-card/90 absolute right-2 bottom-2 flex items-center gap-0.5 rounded-sm p-0.5 shadow-sm backdrop-blur-sm">
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={handleOpenInNewTab}
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Button>
+                }
+              />
+              <TooltipContent>新しいタブで開く</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={handleCopyLink}
+                  >
+                    <Link2 className="h-3.5 w-3.5" />
+                  </Button>
+                }
+              />
+              <TooltipContent>リンクをコピー</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={handleEdit}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                }
+              />
+              <TooltipContent>編集</TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </CardContent>
 

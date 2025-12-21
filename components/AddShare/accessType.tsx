@@ -75,16 +75,16 @@ export const AccessTypeSection = () => {
             isSelected={accessType === "private"}
           />
           <AccessOption
-            value="pin"
+            value="password"
             label="パスワード"
             icon={KeyRound}
-            isSelected={accessType === "pin"}
+            isSelected={accessType === "password"}
           />
         </RadioGroup>
       </Field>
 
       {/* PIN入力セクション */}
-      {accessType === "pin" && (
+      {accessType === "password" && (
         <Field className="animate-in fade-in slide-in-from-top-3 duration-400">
           <PinCodeInput />
         </Field>
