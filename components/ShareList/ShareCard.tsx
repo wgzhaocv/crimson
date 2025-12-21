@@ -22,7 +22,6 @@ import {
   KeyRound,
   ExternalLink,
   Link2,
-  Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -106,11 +105,6 @@ export const ShareCard = ({ share }: { share: Share }) => {
     }
   };
 
-  const handleEdit = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    // TODO: 編集モーダルを開く
-  };
-
   return (
     <Card className="hover:ring-primary/30 group cursor-pointer transition-all hover:ring-2">
       <CardHeader>
@@ -160,22 +154,6 @@ export const ShareCard = ({ share }: { share: Share }) => {
                 }
               />
               <TooltipContent>リンクをコピー</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger
-                render={
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 w-7 p-0"
-                    onClick={handleEdit}
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
-                }
-              />
-              <TooltipContent>編集</TooltipContent>
             </Tooltip>
           </div>
         </div>
