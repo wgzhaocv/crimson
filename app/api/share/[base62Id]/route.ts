@@ -70,10 +70,7 @@ export async function PUT(request: Request, { params }: Params) {
 
     // 检查核心字段是否有变化
     const now = new Date();
-    const coreFieldsChanged =
-      html !== existingShare.content ||
-      accessType !== existingShare.accessType ||
-      pinHash !== existingShare.pinHash;
+    const coreFieldsChanged = pinHash !== existingShare.pinHash;
 
     await db
       .update(share)

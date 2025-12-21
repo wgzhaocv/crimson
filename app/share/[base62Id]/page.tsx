@@ -1,18 +1,29 @@
-import { base62ToSnowflake } from "@/lib/base62";
-import { getShareCache } from "@/lib/redisCache/shareCache";
+import { cookies } from "next/headers";
+import NotFound from "./components/NotFound";
+import PinEntry from "./components/PinEntry";
+import RateLimited from "./components/RateLimited";
 
-const ShareValidationPage = async ({
-  params,
-}: {
-  params: Promise<{ base62Id: string }>;
-}) => {
-  const { base62Id } = await params;
-  const id = base62ToSnowflake(base62Id);
-  const shareData = await getShareCache(id);
-  if (!shareData) {
-    return <div>Share not found</div>;
+const ShareValidationPage = async () => {
+  const shareState = (await cookies()).get("share-state")?.value;
+
+  if (shareState?.startsWith("rate-limit:")) {
+    const remainingSeconds = parseInt(shareState.split(":")[1], 10);
+    return <RateLimited remainingSeconds={remainingSeconds} />;
   }
-  return <div>SharePage</div>;
+
+  if (shareState === "need-password") {
+    return <PinEntry />;
+  }
+
+  if (shareState === "invalid-password") {
+    return <PinEntry wrongPin={true} />;
+  }
+
+  if (shareState === "not-found") {
+    return <NotFound />;
+  }
+
+  return <NotFound />;
 };
 
 export default ShareValidationPage;

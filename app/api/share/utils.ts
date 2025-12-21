@@ -65,3 +65,11 @@ export async function hashPin(
   }
   return Bun.password.hash(pin, { algorithm: "bcrypt", cost: 10 });
 }
+
+// 验证 PIN
+export async function verifyPin(
+  pin: string,
+  pinHash: string,
+): Promise<boolean> {
+  return Bun.password.verify(pin, pinHash);
+}
