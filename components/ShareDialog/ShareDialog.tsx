@@ -81,6 +81,19 @@ export const ShareDialog = ({
     },
   });
 
+  // 对话框打开时重置表单为最新的 initialData
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        html: initialHtml ?? "",
+        title: initialData?.title ?? "",
+        accessType: initialData?.accessType ?? "public",
+        changePin: !isEditMode,
+        pin: "",
+      });
+    }
+  }, [open, initialData, initialHtml, isEditMode, form]);
+
   // 当 initialHtml 变化时更新表单（用于拖拽）
   useEffect(() => {
     if (initialHtml) {
