@@ -7,7 +7,13 @@ import {
   FieldError,
 } from "@/components/ui/field";
 import { UploadCloud, Clipboard, ExpandIcon } from "lucide-react";
-import { useState, useRef, useEffect, startTransition } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  startTransition,
+  useImperativeHandle,
+} from "react";
 import { Textarea } from "../ui/textarea";
 import { parseHTML } from "@/lib/parseHTML";
 import { toast } from "sonner";
@@ -39,12 +45,26 @@ const useHtmlValid = (html: string) => {
   return isValid;
 };
 
-export const HtmlSection = () => {
+export type HtmlSectionHandle = {
+  setHtmlContent: (html: string) => void;
+};
+
+export const HtmlSection = ({ ref }: { ref: React.Ref<HtmlSectionHandle> }) => {
   const [htmlContent, setHtmlContent] = useState("");
   const [title, setTitle] = useState<string>("");
   const [isTouched, setIsTouched] = useState(false);
   const isValid = useHtmlValid(htmlContent);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSetHtmlContent = (html: string) => {
+    setHtmlContent(html);
+    const { title } = parseHTML(html);
+    setTitle(title ?? "");
+  };
+
+  useImperativeHandle(ref, () => ({
+    setHtmlContent: handleSetHtmlContent,
+  }));
 
   // 处理文件读取逻辑
   const handleFileRead = (file: File) => {
@@ -58,9 +78,7 @@ export const HtmlSection = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const content = e.target?.result as string;
-      setHtmlContent(content);
-      const { title } = parseHTML(content);
-      setTitle(title ?? "");
+      handleSetHtmlContent(content);
     };
     reader.readAsText(file);
   };
@@ -75,9 +93,7 @@ export const HtmlSection = () => {
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText();
-      setHtmlContent(text);
-      const { title } = parseHTML(text);
-      setTitle(title ?? "");
+      handleSetHtmlContent(text);
     } catch (err) {
       console.error("Failed to read clipboard", err);
       if (err instanceof Error) {

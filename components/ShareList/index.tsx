@@ -5,6 +5,7 @@ import { ShareCard, type Share } from "./ShareCard";
 import { ShareLoadingList } from "./LoadingList";
 import { ErrorShareList } from "./ErrorShareList";
 import { EmptyShareList } from "./EmptyShareList";
+import { UploadArea } from "../SharedCards/UploadCard";
 
 const fetchShares = async (): Promise<Share[]> => {
   const res = await fetch("/api/shares");
@@ -47,6 +48,7 @@ export const ShareList = () => {
   // 显示列表
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <UploadArea />
       {data.map((share) => (
         <ShareCard key={share.id} share={share} />
       ))}
