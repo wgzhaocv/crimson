@@ -11,25 +11,19 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { deleteShareCache, getShareCache } from "@/lib/redisCache/shareCache";
 import { base62ToSnowflake } from "@/lib/base62";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 
 type Params = { params: Promise<{ base62Id: string }> };
 
 export async function GET(_request: Request, { params }: Params) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-  }
+  const sessionResult = await getSessionOrError();
+  if ("error" in sessionResult) return sessionResult.error;
+  const { userId } = sessionResult;
 
   const { base62Id } = await params;
 
   try {
     const id = base62ToSnowflake(base62Id);
-    const shareData = await getShareCache(id, session.user.id);
+    const shareData = await getShareCache(id, userId);
 
     if (!shareData) {
       return NextResponse.json(

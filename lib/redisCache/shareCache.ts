@@ -101,8 +101,9 @@ export const deleteShareCache = async (id: bigint | string): Promise<void> => {
 /**
  * 刷新 share 缓存（从数据库重新加载）
  */
-export const refreshShareCache = async (id: bigint): Promise<ShareData | null> => {
+export const refreshShareCache = async (
+  id: bigint,
+): Promise<ShareData | null> => {
   await deleteShareCache(id);
   return getShareCache(id);
 };
-
