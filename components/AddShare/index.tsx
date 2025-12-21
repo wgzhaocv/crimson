@@ -9,8 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Field, FieldLabel } from "@/components/ui/field";
 import { Plus } from "lucide-react";
 import { FieldGroup } from "../ui/field";
 import { HtmlSection } from "./html";
@@ -70,24 +68,11 @@ export const AddShare = () => {
 
               {/* 公開範囲の設定（省略せず以前のロジックを維持） */}
               <AccessTypeSection />
-
-              {/* ページタイトル */}
-              <Field>
-                <FieldLabel htmlFor="title">タイトル</FieldLabel>
-                <Input
-                  id="title"
-                  name="title"
-                  placeholder="例: マイ・ポートフォリオ 2024"
-                  className="h-11"
-                />
-              </Field>
             </FieldGroup>
           </div>
 
           <DialogFooter
-            className={cn(
-              "bg-muted/30 flex flex-row items-center justify-end gap-2 px-8 pb-4",
-            )}
+            className={cn("flex items-center justify-end gap-2 px-8 pb-4")}
           >
             <Button
               type="button"

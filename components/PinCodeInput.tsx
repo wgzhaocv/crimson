@@ -118,21 +118,21 @@ export const PinCodeInput: React.FC<PinCodeInputProps> = ({
             type="text"
             name={`pin-${index}`}
             inputMode="numeric"
+            enterKeyHint="next"
             autoComplete="one-time-code"
-            pattern="\d{1}"
+            pattern="[0-9]*"
             maxLength={1}
             value={value}
             onChange={(e) => handleChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
             onPaste={handlePaste}
-            placeholder="•"
+            placeholder=""
             className={cn(
-              "h-14 w-full rounded-xl border-2 text-center text-xl font-black transition-all outline-none sm:h-16 sm:text-2xl",
-              "bg-background shadow-sm",
-              "placeholder:text-muted-foreground/30",
+              "h-14 w-full rounded-xl border text-center text-xl font-medium transition-all sm:h-16 sm:text-2xl",
+              "bg-background shadow-sm ring-0 outline-none",
               value
-                ? "border-primary bg-primary/2 text-primary shadow-[0_0_15px_-5px_rgba(var(--primary),0.3)]"
-                : "border-border/60 focus:border-primary/50 focus:ring-primary/10 focus:ring-4",
+                ? "border-primary bg-primary/5 text-primary"
+                : "border-primary/20 focus:border-primary",
             )}
           />
         ))}
