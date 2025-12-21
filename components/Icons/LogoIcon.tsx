@@ -17,8 +17,7 @@ export const LogoIcon = (props: SVGProps<SVGSVGElement>) => {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="360" cy="256" r="40" fill="currentColor" /> //
-      改为继承当前文本颜色
+      <circle cx="360" cy="256" r="40" fill="currentColor" />
     </svg>
   );
 };
