@@ -9,8 +9,42 @@ import {
 } from "../utils";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
+import { deleteShareCache, getShareCache } from "@/lib/redisCache/shareCache";
+import { base62ToSnowflake } from "@/lib/base62";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 type Params = { params: Promise<{ base62Id: string }> };
+
+export async function GET(_request: Request, { params }: Params) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
+  }
+
+  const { base62Id } = await params;
+
+  try {
+    const id = base62ToSnowflake(base62Id);
+    const shareData = await getShareCache(id, session.user.id);
+
+    if (!shareData) {
+      return NextResponse.json(
+        { error: "共有が見つかりません" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json({
+      content: shareData.content,
+    });
+  } catch {
+    return NextResponse.json({ error: "無効なIDです" }, { status: 400 });
+  }
+}
 
 export async function PUT(request: Request, { params }: Params) {
   const sessionResult = await getSessionOrError();
@@ -51,6 +85,9 @@ export async function PUT(request: Request, { params }: Params) {
       })
       .where(eq(share.id, id));
 
+    // 清除缓存
+    await deleteShareCache(id);
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("共有の更新に失敗しました:", error);
@@ -73,6 +110,9 @@ export async function DELETE(_request: Request, { params }: Params) {
 
   try {
     await db.delete(share).where(eq(share.id, id));
+
+    // 清除缓存
+    await deleteShareCache(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

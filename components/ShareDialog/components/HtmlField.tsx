@@ -28,7 +28,7 @@ const useSetHtmlContent = () => {
 // 获取 share content 的 hook，5分钟缓存
 export const fetchShareContent = async (id?: string): Promise<string> => {
   if (!id) return "";
-  const res = await fetch(`/api/share/content/${id}`);
+  const res = await fetch(`/api/share/${id}`);
   if (!res.ok) {
     const json = await res.json().catch(() => ({}));
     throw new Error(json.error || "コンテンツの取得に失敗しました");
@@ -38,7 +38,7 @@ export const fetchShareContent = async (id?: string): Promise<string> => {
 };
 
 export const useShareContent = (id?: string) => {
-  const handleSetHtmlContent = useSetHtmlContent();
+  const { setValue } = useFormContext();
   const { data, isLoading } = useQuery({
     queryKey: ["share", id],
     queryFn: () => fetchShareContent(id),
@@ -49,9 +49,9 @@ export const useShareContent = (id?: string) => {
 
   useEffect(() => {
     if (data) {
-      handleSetHtmlContent(data);
+      setValue("html", data);
     }
-  }, [data, handleSetHtmlContent]);
+  }, [data, setValue]);
 
   return { isLoading: !!id && isLoading };
 };

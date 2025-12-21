@@ -37,7 +37,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { usePathname } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
@@ -95,7 +94,6 @@ export const ShareCard = ({
   ...props
 }: { share: ShareListItemType } & React.ComponentProps<typeof Card>) => {
   const config = accessTypeConfig[share.accessType];
-  const pathname = usePathname();
   const AccessIcon = config.icon;
   const gradient = getGradient(share.id);
 
@@ -108,7 +106,7 @@ export const ShareCard = ({
     });
   };
 
-  const shareUrl = `${pathname}/share/${share.id}`;
+  const shareUrl = `${window.location.origin}/share/${share.id}`;
 
   const handleOpenInNewTab = (e: React.MouseEvent) => {
     e.stopPropagation();
