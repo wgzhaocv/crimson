@@ -9,6 +9,7 @@ interface PinCodeInputProps {
   onChange?: (code: string) => void;
   onComplete?: (code: string) => void;
   className?: string;
+  hideShieldIcon?: boolean;
 }
 
 export const PinCodeInput: React.FC<PinCodeInputProps> = ({
@@ -17,9 +18,12 @@ export const PinCodeInput: React.FC<PinCodeInputProps> = ({
   onChange,
   onComplete,
   className,
+  hideShieldIcon = false,
 }) => {
   // 支持受控和非受控模式
-  const [internalValues, setInternalValues] = useState<string[]>(Array(length).fill(""));
+  const [internalValues, setInternalValues] = useState<string[]>(
+    Array(length).fill(""),
+  );
   const isControlled = value !== undefined;
   const values = isControlled
     ? Array.from({ length }, (_, i) => value[i] || "")
@@ -104,9 +108,11 @@ export const PinCodeInput: React.FC<PinCodeInputProps> = ({
   return (
     <div className={cn("flex w-full flex-col gap-4", className)}>
       <FieldLabel className="mb-1 flex items-center gap-2">
-        <div className="bg-primary/10 rounded-full p-1.5">
-          <ShieldCheck className="text-primary h-4 w-4" />
-        </div>
+        {!hideShieldIcon && (
+          <div className="bg-primary/10 rounded-full p-1.5">
+            <ShieldCheck className="text-primary h-4 w-4" />
+          </div>
+        )}
         <span className="text-primary text-sm font-bold tracking-tight">
           6桁のアクセスコードを設定
         </span>

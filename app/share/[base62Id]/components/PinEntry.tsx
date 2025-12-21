@@ -72,7 +72,7 @@ const PinEntry = ({ wrongPin = false }: PinEntryProps) => {
             )}
 
             {/* Pin Input */}
-            <PinCodeInput value={pin} onChange={setPin} />
+            <PinCodeInput value={pin} onChange={setPin} hideShieldIcon />
 
             {/* Submit Button */}
             <Button
