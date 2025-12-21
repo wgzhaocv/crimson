@@ -15,6 +15,17 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip";
 import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import {
   Globe,
   Lock,
   Eye,
@@ -22,10 +33,14 @@ import {
   KeyRound,
   ExternalLink,
   Link2,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { Spinner } from "../ui/spinner";
 
 export type ShareListItemType = {
   id: string;
@@ -112,9 +127,14 @@ export const ShareCard = ({
 
   return (
     <Card
-      className="hover:ring-primary/30 group cursor-pointer transition-all hover:ring-2"
+      className="hover:ring-primary/30 group relative cursor-pointer transition-all hover:ring-2"
       {...props}
     >
+      {/* Delete Button - Card 右上角 */}
+      <div className="absolute top-2 right-2 z-10">
+        <DeleteButton id={share.id} title={share.title} />
+      </div>
+
       <CardHeader>
         <CardTitle className="line-clamp-1">{share.title || "無題"}</CardTitle>
         <CardDescription className="flex items-center gap-1.5">
@@ -178,5 +198,78 @@ export const ShareCard = ({
         </div>
       </CardFooter>
     </Card>
+  );
+};
+
+// 删除按钮组件
+const DeleteButton = ({ id, title }: { id: string; title: string | null }) => {
+  const [open, setOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const queryClient = useQueryClient();
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`/api/share/${id}`, { method: "DELETE" });
+      const result = await res.json();
+
+      if (!res.ok) {
+        toast.error(result.error ?? "削除に失敗しました");
+        return;
+      }
+
+      toast.success("削除しました");
+      setOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["shares"] });
+    } catch {
+      toast.error("削除に失敗しました");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <Tooltip>
+        <TooltipTrigger
+          render={
+            <AlertDialogTrigger
+              render={
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-destructive hover:text-destructive h-9 w-9 p-0 sm:h-7 sm:w-7"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Trash2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
+                </Button>
+              }
+            />
+          }
+        />
+        <TooltipContent>削除</TooltipContent>
+      </Tooltip>
+
+      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+        <AlertDialogHeader>
+          <AlertDialogTitle>本当に削除しますか？</AlertDialogTitle>
+          <AlertDialogDescription>
+            「{title || "無題"}」を削除します。この操作は取り消せません。
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isDeleting}>
+            キャンセル
+          </AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          >
+            {isDeleting ? <Spinner /> : "削除"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
