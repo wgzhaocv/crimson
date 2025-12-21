@@ -26,7 +26,9 @@ const PinEntry = ({ wrongPin = false }: PinEntryProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (pin.length === 6) {
-      document.cookie = `share-pin=${pin}; path=${pathname}; max-age=60; SameSite=Lax`;
+      // 只在 https 下加 Secure，避免本地 http 开发时 cookie 写不进去
+      const secureAttr = window.location.protocol === "https:" ? "; Secure" : "";
+      document.cookie = `share-pin=${pin}; path=${pathname}; max-age=60; SameSite=Lax${secureAttr}`;
       window.location.reload();
     }
   };
