@@ -1,3 +1,5 @@
+import { ShareLoadingList } from "../ShareList/LoadingList";
+
 export const MainContentSkeleton = () => {
   return (
     <main className="container mx-auto flex-1 px-4 py-8">
@@ -9,15 +11,7 @@ export const MainContentSkeleton = () => {
       </div>
 
       {/* Content Grid Placeholder */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <UploadCardSkeleton />
-        <UploadCardSkeleton />
-        <UploadCardSkeleton />
-      </div>
+      <ShareLoadingList />
     </main>
   );
-};
-
-const UploadCardSkeleton = () => {
-  return <div className="bg-foreground/10 h-48 animate-pulse" />;
 };

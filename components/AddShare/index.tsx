@@ -18,27 +18,31 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useFormStatus } from "react-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const AddShare = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
   const onSave = async (formData: FormData) => {
-    const html = formData.get("html");
-    const title = formData.get("title");
-    const accessType = formData.get("accessType");
-    const pin = formData.get("pin");
-    console.log(Object.fromEntries(formData));
-    toast.success(html + " " + title + " " + accessType + " " + pin);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success("保存しました");
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("エラーが発生しました");
+      const res = await fetch("/api/share", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.error ?? "エラーが発生しました");
+        return;
       }
-    } finally {
+
+      toast.success("保存しました");
       setIsOpen(false);
+      // clear cache from react query
+      queryClient.invalidateQueries({ queryKey: ["shares"] });
+    } catch {
+      toast.error("エラーが発生しました");
     }
   };
   return (

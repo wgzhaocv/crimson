@@ -1,7 +1,7 @@
 "use client";
 import { CopyRight } from "@/components/Layout/CopyRight";
 import { Header } from "@/components/Layout/Header";
-import { UploadCard } from "@/components/SharedCards/UploadCard";
+import { ShareList } from "@/components/ShareList";
 import { MainBg } from "@/components/Layout/MainBg";
 import { AddShare } from "@/components/AddShare";
 import { Greeting } from "@/components/Greeting";
@@ -20,10 +20,8 @@ function MainPage() {
           <AddShare />
         </div>
 
-        {/* Empty State / Content Grid Placeholder */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <UploadCard />
-        </div>
+        {/* Share List */}
+        <ShareList />
       </main>
 
       <CopyRight />

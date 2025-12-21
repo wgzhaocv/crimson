@@ -21,7 +21,7 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "types": ["dom-chromium-ai"]
+    "types": ["bun"]
   },
   "include": [
     "next-env.d.ts",
