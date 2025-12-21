@@ -10,6 +10,7 @@ import { auth } from "./lib/auth";
 import { genOneTimeToken } from "./lib/crypto/genOneTimeToken";
 import { checkPinIsValid } from "./lib/crypto/checkPinIsValid";
 import { getReqIp } from "./lib/getReqIp";
+import { recordShareView } from "./lib/viewTracking";
 import {
   checkPasswordRateLimit,
   clearPasswordAttempts,
@@ -39,6 +40,18 @@ export async function proxy(request: NextRequest) {
     auth.api.getSession({ headers: request.headers }),
   ]);
 
+  // 记录一次浏览（排除 owner），异步写 Redis：不阻塞跳转
+  const recordView = () => {
+    if (session?.user.id && session.user.id === shareData?.ownerId) return;
+    recordShareView({
+      shareId: id,
+      viewerId: session?.user.id ?? null,
+      ip: getReqIp(request),
+      userAgent: request.headers.get("user-agent"),
+      referer: request.headers.get("referer"),
+    }).catch((err) => console.error("recordShareView failed:", err));
+  };
+
   if (!shareData) {
     const response = NextResponse.next();
     response.cookies.set("share-state", "not-found", {
@@ -51,6 +64,13 @@ export async function proxy(request: NextRequest) {
     session?.user.id === shareData.ownerId ||
     shareData.accessType === "public"
   ) {
+    // public 且非 owner：记一次浏览
+    if (
+      shareData.accessType === "public" &&
+      session?.user.id !== shareData.ownerId
+    ) {
+      recordView();
+    }
     return redirectToRenderPage(base62Id);
   }
 
@@ -67,6 +87,7 @@ export async function proxy(request: NextRequest) {
   );
 
   if (verifyTokenValid) {
+    recordView();
     return redirectToRenderPage(base62Id);
   }
 
@@ -101,6 +122,7 @@ export async function proxy(request: NextRequest) {
     await clearPasswordAttempts(base62Id, ip);
   }
 
+  recordView();
   const redirectResponse = redirectToRenderPage(base62Id);
   setVerifyCookie(redirectResponse, base62Id);
   return redirectResponse;

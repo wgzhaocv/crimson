@@ -5,6 +5,7 @@ import { snowflakeToBase62 } from "@/lib/base62";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { desc, eq } from "drizzle-orm";
+import { getViewCountTotalDeltas } from "@/lib/viewTracking";
 
 export async function GET() {
   const session = await auth.api.getSession({
@@ -29,9 +30,13 @@ export async function GET() {
       .where(eq(share.ownerId, session.user.id))
       .orderBy(desc(share.createdAt));
 
+    // 近实时：DB viewCount + Redis 增量
+    const deltas = await getViewCountTotalDeltas(shares.map((s) => s.id));
+
     return NextResponse.json(
       shares.map((s) => ({
         ...s,
+        viewCount: s.viewCount + (deltas.get(s.id.toString()) ?? 0),
         id: snowflakeToBase62(s.id),
       })),
     );
