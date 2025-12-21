@@ -5,6 +5,7 @@ import { FieldLabel } from "./ui/field";
 
 interface PinCodeInputProps {
   length?: number;
+  value?: string;
   onChange?: (code: string) => void;
   onComplete?: (code: string) => void;
   className?: string;
@@ -12,11 +13,18 @@ interface PinCodeInputProps {
 
 export const PinCodeInput: React.FC<PinCodeInputProps> = ({
   length = 6,
+  value,
   onChange,
   onComplete,
   className,
 }) => {
-  const [values, setValues] = useState<string[]>(Array(length).fill(""));
+  // 支持受控和非受控模式
+  const [internalValues, setInternalValues] = useState<string[]>(Array(length).fill(""));
+  const isControlled = value !== undefined;
+  const values = isControlled
+    ? Array.from({ length }, (_, i) => value[i] || "")
+    : internalValues;
+
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   // 确保 refs 数组长度正确
@@ -24,25 +32,28 @@ export const PinCodeInput: React.FC<PinCodeInputProps> = ({
     inputRefs.current = inputRefs.current.slice(0, length);
   }, [length]);
 
-  const handleChange = (index: number, value: string) => {
+  const updateValues = (newValues: string[]) => {
+    if (!isControlled) {
+      setInternalValues(newValues);
+    }
+    const fullCode = newValues.join("");
+    onChange?.(fullCode);
+    if (fullCode.length === length && onComplete) {
+      onComplete(fullCode);
+    }
+  };
+
+  const handleChange = (index: number, inputValue: string) => {
     // 仅允许数字
-    const digit = value.replace(/[^0-9]/g, "").slice(-1);
+    const digit = inputValue.replace(/[^0-9]/g, "").slice(-1);
 
     const newValues = [...values];
     newValues[index] = digit;
-    setValues(newValues);
-
-    const fullCode = newValues.join("");
-    if (onChange) onChange(fullCode);
+    updateValues(newValues);
 
     // 自动向后跳转
     if (digit && index < length - 1) {
       inputRefs.current[index + 1]?.focus();
-    }
-
-    // 完成检查
-    if (fullCode.length === length && onComplete) {
-      onComplete(fullCode);
     }
   };
 
@@ -55,16 +66,13 @@ export const PinCodeInput: React.FC<PinCodeInputProps> = ({
         // 当前格为空且不是第一格时，回退到上一格
         const newValues = [...values];
         newValues[index - 1] = "";
-        setValues(newValues);
+        updateValues(newValues);
         inputRefs.current[index - 1]?.focus();
-
-        if (onChange) onChange(newValues.join(""));
       } else {
         // 否则只清空当前格
         const newValues = [...values];
         newValues[index] = "";
-        setValues(newValues);
-        if (onChange) onChange(newValues.join(""));
+        updateValues(newValues);
       }
     } else if (e.key === "ArrowLeft" && index > 0) {
       inputRefs.current[index - 1]?.focus();
@@ -85,11 +93,7 @@ export const PinCodeInput: React.FC<PinCodeInputProps> = ({
       pastedData.split("").forEach((char, i) => {
         if (i < length) newValues[i] = char;
       });
-      setValues(newValues);
-
-      const fullCode = newValues.join("");
-      if (onChange) onChange(fullCode);
-      if (fullCode.length === length && onComplete) onComplete(fullCode);
+      updateValues(newValues);
 
       // 聚焦到最后一个输入的下一格或最后一格
       const nextIndex = Math.min(pastedData.length, length - 1);

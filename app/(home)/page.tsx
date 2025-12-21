@@ -3,8 +3,10 @@ import { CopyRight } from "@/components/Layout/CopyRight";
 import { Header } from "@/components/Layout/Header";
 import { ShareList } from "@/components/ShareList";
 import { MainBg } from "@/components/Layout/MainBg";
-import { AddShare } from "@/components/AddShare";
+import { ShareDialog } from "@/components/ShareDialog/ShareDialog";
 import { Greeting } from "@/components/Greeting";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 function MainPage() {
   return (
@@ -17,7 +19,12 @@ function MainPage() {
           <Greeting />
 
           {/* Add HTML Fragment Button */}
-          <AddShare />
+          <ShareDialog>
+            <Button className="shadow-primary/20 bg-primary text-primary-foreground flex h-12 items-center gap-2 px-6 font-black tracking-widest uppercase shadow-lg transition-all hover:opacity-90">
+              <Plus className="h-5 w-5" />
+              HTMLを追加
+            </Button>
+          </ShareDialog>
         </div>
 
         {/* Share List */}

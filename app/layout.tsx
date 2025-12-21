@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "sonner";
-import { QueryProvider } from "@/providers/query-provider";
 
 export const metadata: Metadata = {
   title: "Crimson",
@@ -23,7 +22,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>{children}</QueryProvider>
+          {children}
         </ThemeProvider>
         <Toaster />
       </body>

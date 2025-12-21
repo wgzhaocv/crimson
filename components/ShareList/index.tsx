@@ -1,13 +1,14 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ShareCard, type Share } from "./ShareCard";
+import { ShareCard, type ShareListItemType } from "./ShareCard";
 import { ShareLoadingList } from "./LoadingList";
 import { ErrorShareList } from "./ErrorShareList";
 import { EmptyShareList } from "./EmptyShareList";
 import { UploadArea } from "../SharedCards/UploadCard";
+import { ShareDialog } from "../ShareDialog/ShareDialog";
 
-const fetchShares = async (): Promise<Share[]> => {
+const fetchShares = async (): Promise<ShareListItemType[]> => {
   const res = await fetch("/api/shares");
   if (!res.ok) {
     let errorMessage = "";
@@ -50,7 +51,9 @@ export const ShareList = () => {
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       <UploadArea />
       {data.map((share) => (
-        <ShareCard key={share.id} share={share} />
+        <ShareDialog key={share.id} initialData={share}>
+          <ShareCard share={share} />
+        </ShareDialog>
       ))}
     </div>
   );

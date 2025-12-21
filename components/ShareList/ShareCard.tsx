@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { usePathname } from "next/navigation";
 
-export type Share = {
+export type ShareListItemType = {
   id: string;
   title: string | null;
   accessType: "public" | "password" | "private";
@@ -75,7 +75,10 @@ const getGradient = (id: string) => {
   return gradientPresets[Math.abs(hash) % gradientPresets.length];
 };
 
-export const ShareCard = ({ share }: { share: Share }) => {
+export const ShareCard = ({
+  share,
+  ...props
+}: { share: ShareListItemType } & React.ComponentProps<typeof Card>) => {
   const config = accessTypeConfig[share.accessType];
   const pathname = usePathname();
   const AccessIcon = config.icon;
@@ -108,7 +111,10 @@ export const ShareCard = ({ share }: { share: Share }) => {
   };
 
   return (
-    <Card className="hover:ring-primary/30 group cursor-pointer transition-all hover:ring-2">
+    <Card
+      className="hover:ring-primary/30 group cursor-pointer transition-all hover:ring-2"
+      {...props}
+    >
       <CardHeader>
         <CardTitle className="line-clamp-1">{share.title || "無題"}</CardTitle>
         <CardDescription className="flex items-center gap-1.5">

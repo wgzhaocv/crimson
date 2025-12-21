@@ -1,10 +1,10 @@
 "use client";
 import { FileCode } from "lucide-react";
 import { Card } from "../ui/card";
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { AddShareDialog, type HtmlSectionHandle } from "../AddShare";
+import { ShareDialog } from "../ShareDialog/ShareDialog";
 
 export const UploadCard = ({
   onClick,
@@ -87,7 +87,6 @@ export const UploadCard = ({
 export const UploadArea = () => {
   const [open, setOpen] = useState(false);
   const [droppedHtml, setDroppedHtml] = useState<string | undefined>(undefined);
-  const htmlSectionRef = useRef<HtmlSectionHandle>(null);
 
   const handleClick = () => {
     setDroppedHtml(undefined);
@@ -106,19 +105,13 @@ export const UploadArea = () => {
     }
   };
 
-  // 等待输入框渲染后才能设置值
-  useEffect(() => {
-    if (open && droppedHtml) {
-      const timer = setTimeout(() => {
-        htmlSectionRef.current?.setHtmlContent(droppedHtml);
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [open, droppedHtml]);
-
   return (
-    <AddShareDialog ref={htmlSectionRef} open={open} setOpen={handleOpenChange}>
+    <ShareDialog
+      open={open}
+      onOpenChange={handleOpenChange}
+      initialHtml={droppedHtml}
+    >
       <UploadCard onClick={handleClick} onDropHtml={handleDropHtml} />
-    </AddShareDialog>
+    </ShareDialog>
   );
 };
