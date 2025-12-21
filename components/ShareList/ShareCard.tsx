@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { usePathname } from "next/navigation";
 
 export type Share = {
   id: string;
@@ -76,6 +77,7 @@ const getGradient = (id: string) => {
 
 export const ShareCard = ({ share }: { share: Share }) => {
   const config = accessTypeConfig[share.accessType];
+  const pathname = usePathname();
   const AccessIcon = config.icon;
   const gradient = getGradient(share.id);
 
@@ -88,7 +90,7 @@ export const ShareCard = ({ share }: { share: Share }) => {
     });
   };
 
-  const shareUrl = `${window.location.origin}/s/${share.id}`;
+  const shareUrl = `${pathname}/share/${share.id}`;
 
   const handleOpenInNewTab = (e: React.MouseEvent) => {
     e.stopPropagation();
