@@ -40,6 +40,7 @@ import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
+import { ButtonGroup } from "../ui/button-group";
 
 export type ShareListItemType = {
   id: string;
@@ -149,7 +150,7 @@ export const ShareCard = ({
           )}
         >
           {/* Action Buttons */}
-          <div className="bg-card/90 absolute right-2 bottom-2 flex items-center gap-0.5 rounded-sm p-0.5 shadow-sm backdrop-blur-sm">
+          <ButtonGroup className="bg-card/90 absolute right-2 bottom-2 flex items-center gap-0.5 overflow-hidden rounded-sm shadow-sm backdrop-blur-sm">
             <Tooltip>
               <TooltipTrigger
                 render={
@@ -165,7 +166,6 @@ export const ShareCard = ({
               />
               <TooltipContent>新しいタブで開く</TooltipContent>
             </Tooltip>
-
             <Tooltip>
               <TooltipTrigger
                 render={
@@ -181,7 +181,7 @@ export const ShareCard = ({
               />
               <TooltipContent>リンクをコピー</TooltipContent>
             </Tooltip>
-          </div>
+          </ButtonGroup>
         </div>
       </CardContent>
 

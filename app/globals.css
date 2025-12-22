@@ -66,10 +66,10 @@
   --background: oklch(0.17 0.015 25.4);
   --foreground: oklch(0.95 0.01 25);
 
-  /* 卡片与弹出层 - 相应调亮以维持层级 0.15 -> 0.22 */
-  --card: oklch(0.22 0.02 25.4);
+  /* 卡片与弹出层 - 相应调亮以维持层级 0.15 -> 0.26 */
+  --card: oklch(0.24 0.02 25.4);
   --card-foreground: oklch(0.95 0.01 25);
-  --popover: oklch(0.22 0.02 25.4);
+  --popover: oklch(0.24 0.02 25.4);
   --popover-foreground: oklch(0.95 0.01 25);
 
   /* 暗色模式主色调 */
