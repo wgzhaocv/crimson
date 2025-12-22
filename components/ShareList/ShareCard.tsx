@@ -157,7 +157,7 @@ export const ShareCard = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-9 w-9 p-0 sm:h-7 sm:w-7"
+                    className="h-9 w-9 border-none p-0 sm:h-7 sm:w-7"
                     onClick={handleOpenInNewTab}
                   >
                     <ExternalLink className="h-4 w-4 sm:h-3.5 sm:w-3.5" />
@@ -172,7 +172,7 @@ export const ShareCard = ({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-9 w-9 p-0 sm:h-7 sm:w-7"
+                    className="h-9 w-9 border-none p-0 sm:h-7 sm:w-7"
                     onClick={handleCopyLink}
                   >
                     <Link2 className="h-4 w-4 sm:h-3.5 sm:w-3.5" />

@@ -82,8 +82,8 @@
   --muted: oklch(0.26 0.04 25.4);
   --muted-foreground: oklch(0.7 0.03 25.4);
 
-  /* 强调色（黑暗模式下调高亮度 0.25 -> 0.32，增强 hover 效果） */
-  --accent: oklch(0.32 0.06 25.4);
+  /* 强调色（黑暗模式下调高亮度 0.25 -> 0.38，增强 hover 效果） */
+  --accent: oklch(0.38 0.06 25.4);
   --accent-foreground: oklch(0.98 0.05 25.4);
   --destructive: oklch(0.45 0.2 25.4);
 
