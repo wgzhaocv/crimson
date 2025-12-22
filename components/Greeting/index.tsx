@@ -1,6 +1,5 @@
-"use client";
-
-import { useSession } from "@/lib/auth-client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -9,15 +8,17 @@ const getGreeting = () => {
   return "こんばんは";
 };
 
-export const Greeting = () => {
-  const session = useSession();
+export const Greeting = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
   const greeting = getGreeting();
 
   return (
     <div className="space-y-1">
       <h1 className="text-2xl font-bold tracking-tight">
         <span className="text-muted-foreground font-normal">{greeting}、</span>
-        <span className="text-primary">{session.data?.user?.name}</span>
+        <span className="text-primary">{session?.user.name}</span>
       </h1>
     </div>
   );

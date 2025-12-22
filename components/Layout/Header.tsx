@@ -1,20 +1,10 @@
-"use client";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut } from "lucide-react";
 import { LogoIcon } from "../Icons/LogoIcon";
 import { ThemeToggle } from "../theme-toggle";
-import { authClient } from "@/lib/auth-client";
-import { useState } from "react";
-import { Spinner } from "../ui/spinner";
+import { logout } from "./action";
+import { LogoutButton } from "./LogOutButton";
 
 export const Header = () => {
-  const [isPending, setIsPending] = useState(false);
-  const logout = async () => {
-    setIsPending(true);
-    await authClient.signOut();
-    window.location.href = "/login"; // 最可靠
-  };
   return (
     <header className="border-border/40 bg-background/80 sticky top-0 z-40 w-full border-b backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -28,18 +18,9 @@ export const Header = () => {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <div className="bg-border mx-2 h-4 w-px" />
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground hover:text-destructive flex items-center gap-2 px-3 transition-all duration-300"
-            onClick={logout}
-            disabled={isPending}
-          >
-            {isPending ? <Spinner /> : <LogOut className="h-4 w-4" />}
-            <span className="hidden text-xs font-bold tracking-widest uppercase sm:inline">
-              ログアウト
-            </span>
-          </Button>
+          <form action={logout}>
+            <LogoutButton />
+          </form>
         </div>
       </div>
     </header>

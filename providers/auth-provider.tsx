@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import MainPageSkeleton from "@/app/loading";
+import MainPageSkeleton from "@/app/(home)/loading";
 import { useSession } from "@/lib/auth-client";
 
 type GuardProps = {

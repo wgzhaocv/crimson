@@ -1,12 +1,11 @@
-"use client";
 import { CopyRight } from "@/components/Layout/CopyRight";
 import { Header } from "@/components/Layout/Header";
-import { ShareList } from "@/components/ShareList";
 import { MainBg } from "@/components/Layout/MainBg";
 import { ShareDialog } from "@/components/ShareDialog/ShareDialog";
 import { Greeting } from "@/components/Greeting";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { ServerShareListHydration } from "@/components/ShareList/ServerShareListHydration";
 
 function MainPage() {
   return (
@@ -28,7 +27,7 @@ function MainPage() {
         </div>
 
         {/* Share List */}
-        <ShareList />
+        <ServerShareListHydration />
       </main>
 
       <CopyRight />

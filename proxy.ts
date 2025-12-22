@@ -29,8 +29,8 @@ const redirectToRenderPage = (base62Id: string) => {
 
   return response;
 };
-// This function can be marked `async` if using `await` inside
-export async function proxy(request: NextRequest) {
+
+const handleShare = async (request: NextRequest) => {
   const pathname = request.nextUrl.pathname;
   const base62Id = pathname.split("/")[2];
   const id = base62ToSnowflake(base62Id);
@@ -126,8 +126,37 @@ export async function proxy(request: NextRequest) {
   const redirectResponse = redirectToRenderPage(base62Id);
   setVerifyCookie(redirectResponse, base62Id);
   return redirectResponse;
+};
+
+// This function can be marked `async` if using `await` inside
+export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // 认证路由处理
+  if (pathname === "/" || pathname === "/login") {
+    const session = await auth.api.getSession({ headers: request.headers });
+
+    // 已登录访问 /login → 重定向到 /
+    if (pathname === "/login" && session) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    // 未登录访问 / → 重定向到 /login
+    if (pathname === "/" && !session) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    return NextResponse.next();
+  }
+
+  // /share/:id 处理
+  if (pathname.startsWith("/share/")) {
+    return handleShare(request);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: "/share/:id",
+  matcher: ["/", "/login", "/share/:id"],
 };

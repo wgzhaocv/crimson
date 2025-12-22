@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -210,7 +211,7 @@ export const ShareDialog = ({
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger render={children} />
+      <DialogTrigger render={children} nativeButton={false} />
 
       <DialogContent className="bg-card overflow-hidden border-none p-0 shadow-2xl sm:max-w-[550px]">
         <FormProvider {...form}>
