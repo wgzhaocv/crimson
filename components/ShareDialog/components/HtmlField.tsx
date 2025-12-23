@@ -140,7 +140,7 @@ export const HtmlField = ({ id }: { id?: string }) => {
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 px-2 text-[11px] font-medium"
+                  className="hidden h-8 px-2 text-[11px] font-medium"
                 >
                   <ExpandIcon className="h-3.5 w-3.5" />
                 </Button>

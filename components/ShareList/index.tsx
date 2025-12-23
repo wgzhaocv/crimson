@@ -7,6 +7,7 @@ import { ErrorShareList } from "./ErrorShareList";
 import { EmptyShareList } from "./EmptyShareList";
 import { UploadArea } from "../SharedCards/UploadCard";
 import { ShareDialog } from "../ShareDialog/ShareDialog";
+import { ListWrapper } from "./ListWrapper";
 
 const fetchShares = async (): Promise<ShareListItemType[]> => {
   const res = await fetch("/api/shares");
@@ -48,13 +49,13 @@ export const ShareList = () => {
 
   // 显示列表
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <ListWrapper>
       <UploadArea />
       {data.map((share) => (
         <ShareDialog key={share.id} initialData={share}>
           <ShareCard share={share} />
         </ShareDialog>
       ))}
-    </div>
+    </ListWrapper>
   );
 };

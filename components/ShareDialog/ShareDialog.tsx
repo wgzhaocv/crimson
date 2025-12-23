@@ -12,17 +12,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { FieldGroup } from "../ui/field";
-import { useCallback, useEffect, useState } from "react";
 import { ShareListItemType } from "../ShareList/ShareCard";
-import { parseHTML } from "@/lib/parseHTML";
-import * as z from "zod";
-import {
-  FormProvider,
-  useForm,
-  UseFormReturn,
-  useWatch,
-} from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider } from "react-hook-form";
 import { Button } from "../ui/button";
 import { HtmlField } from "./components/HtmlField";
 import { TitleField } from "./components/TitleField";
@@ -30,167 +21,7 @@ import { AccessTypeField } from "./components/AccessTypeField";
 import { ChangePinField } from "./components/ChangePinField";
 import { PincodeField } from "./components/PincodeField";
 import { SubmitButton } from "./components/SubmitButton";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-
-// 统一的 schema，用 superRefine 处理验证逻辑
-const shareSchema = z
-  .object({
-    html: z.string().min(1, "HTMLコンテンツは必須です"),
-    title: z.string(),
-    accessType: z.enum(["public", "password", "private"]),
-    changePin: z.boolean(),
-    pin: z.string(),
-  })
-  .superRefine((data, ctx) => {
-    // pin 验证：accessType 是 password 且 changePin 为 true 时必填
-    if (data.accessType === "password" && data.changePin && !data.pin) {
-      ctx.addIssue({
-        code: "custom",
-        message: "パスワード保護にはPINが必要です",
-        path: ["pin"],
-      });
-    }
-  });
-
-export type ShareFormValues = z.infer<typeof shareSchema>;
-
-// ============ 内部 Hooks ============
-
-/** Dialog 开关状态管理（支持受控/非受控模式） */
-const useDialogState = (
-  controlledOpen?: boolean,
-  onOpenChange?: (open: boolean) => void,
-) => {
-  const [internalOpen, setInternalOpen] = useState(false);
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : internalOpen;
-  const setOpen = isControlled ? onOpenChange! : setInternalOpen;
-
-  return { open, setOpen };
-};
-
-/** 表单初始化与副作用管理 */
-const useShareForm = (
-  open: boolean,
-  initialData?: ShareListItemType,
-  initialHtml?: string,
-) => {
-  const isEditMode = !!initialData;
-
-  const form = useForm<ShareFormValues>({
-    resolver: zodResolver(shareSchema),
-    defaultValues: {
-      html: initialHtml ?? "",
-      title: initialData?.title ?? "",
-      accessType: initialData?.accessType ?? "public",
-      changePin: !isEditMode,
-      pin: "",
-    },
-  });
-
-  // 对话框打开时重置表单为最新的 initialData
-  useEffect(() => {
-    if (open) {
-      form.reset({
-        html: initialHtml ?? "",
-        title: initialData?.title ?? "",
-        accessType: initialData?.accessType ?? "public",
-        changePin: !isEditMode,
-        pin: "",
-      });
-    }
-  }, [open, initialData, initialHtml, isEditMode, form]);
-
-  // 当 initialHtml 变化时更新表单（用于拖拽）
-  useEffect(() => {
-    if (initialHtml) {
-      form.setValue("html", initialHtml);
-      const { title } = parseHTML(initialHtml);
-      if (title) {
-        form.setValue("title", title);
-      }
-    }
-  }, [initialHtml, form]);
-
-  // 编辑模式下，从非 password 切换到 password 时，自动设置 changePin 为 true
-  const currentAccessType = useWatch({
-    control: form.control,
-    name: "accessType",
-  });
-  useEffect(() => {
-    if (
-      isEditMode &&
-      initialData?.accessType !== "password" &&
-      currentAccessType === "password"
-    ) {
-      form.setValue("changePin", true);
-    }
-  }, [isEditMode, initialData?.accessType, currentAccessType, form]);
-
-  return { form, isEditMode };
-};
-
-/** 表单提交处理 */
-const useShareSubmit = (
-  form: UseFormReturn<ShareFormValues>,
-  initialData?: ShareListItemType,
-  onSuccess?: () => void,
-) => {
-  const isEditMode = !!initialData;
-  const queryClient = useQueryClient();
-
-  const handleSubmit = useCallback(
-    async (data: ShareFormValues) => {
-      try {
-        const url = isEditMode ? `/api/share/${initialData.id}` : "/api/share";
-        const method = isEditMode ? "PUT" : "POST";
-
-        const res = await fetch(url, {
-          method,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            html: data.html,
-            title: data.title || null,
-            accessType: data.accessType,
-            changePin: data.changePin,
-            pin: data.pin || null,
-          }),
-        });
-
-        const result = await res.json();
-
-        if (!res.ok) {
-          toast.error(result.error ?? "エラーが発生しました");
-          return;
-        }
-
-        toast.success(isEditMode ? "更新しました" : "保存しました");
-        onSuccess?.();
-        form.reset();
-
-        // 刷新列表和 content 缓存
-        queryClient.invalidateQueries({ queryKey: ["shares"] });
-        if (isEditMode) {
-          queryClient.invalidateQueries({
-            queryKey: ["share", initialData.id],
-          });
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        } else {
-          toast.error("エラーが発生しました");
-        }
-      }
-    },
-    [isEditMode, initialData, form, queryClient, onSuccess],
-  );
-
-  return handleSubmit;
-};
-
-// ============ 主组件 ============
+import { useDialogState, useShareForm, useShareSubmit } from "./hooks";
 
 export const ShareDialog = ({
   children,
@@ -239,7 +70,9 @@ export const ShareDialog = ({
             </div>
 
             <DialogFooter
-              className={cn("flex items-center justify-end gap-2 px-8 pb-4")}
+              className={cn(
+                "flex flex-row items-center justify-end gap-2 px-8 pb-4",
+              )}
             >
               <Button
                 type="button"
