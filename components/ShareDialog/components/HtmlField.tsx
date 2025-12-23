@@ -97,6 +97,7 @@ export const HtmlField = ({ id }: { id?: string }) => {
     const pastedText = e.clipboardData.getData("text");
     const { title: extractedTitle, isHTML } = parseHTML(pastedText);
     if (isHTML && extractedTitle) {
+      e.preventDefault();
       handleSetHtmlContent(pastedText);
     }
   };
