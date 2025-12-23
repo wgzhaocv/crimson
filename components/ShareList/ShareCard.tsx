@@ -107,7 +107,12 @@ export const ShareCard = ({
     });
   };
 
-  const shareUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/share/${share.id}`;
+  let shareUrl: string;
+  if (typeof window !== "undefined") {
+    shareUrl = `${window.location.origin}/share/${share.id}`;
+  } else {
+    shareUrl = `${process.env.BASE_URL}/share/${share.id}`;
+  }
 
   const handleOpenInNewTab = (e: React.MouseEvent) => {
     e.stopPropagation();

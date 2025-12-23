@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 
 // 服务端用的 fetch 函数，需要完整 URL
 async function getShares() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/shares`, {
+  const res = await fetch(`${process.env.BASE_URL}/api/shares`, {
     cache: "no-store",
     headers: {
       cookie: (await cookies()).toString(),
