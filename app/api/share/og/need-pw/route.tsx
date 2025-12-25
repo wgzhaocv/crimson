@@ -1,12 +1,11 @@
 import { ImageResponse } from "next/og";
-
-export const runtime = "edge";
+import { readFile } from "fs/promises";
+import { join } from "path";
 
 export const GET = async () => {
-  // 加载 Noto Sans JP 字体
-  const fontData = await fetch(
-    "https://fonts.gstatic.com/s/notosansjp/v52/-F6jfjtqLzI2JPCgQBnw7HFyzSD-AsregP8VFBEj75s.woff",
-  ).then((res) => res.arrayBuffer());
+  // 从本地读取 Noto Sans JP 字体
+  const fontPath = join(process.cwd(), "app/fonts/NotoSansJP-Bold.woff2");
+  const fontData = await readFile(fontPath);
 
   return new ImageResponse(
     <div

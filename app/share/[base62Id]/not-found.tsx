@@ -1,11 +1,9 @@
-"use client";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ArrowRight } from "lucide-react";
 
-const NotFound = () => {
+export default function NotFound() {
   return (
     <div className="bg-background fixed inset-0 flex flex-col items-center justify-center">
       {/* Theme Toggle */}
@@ -46,6 +44,4 @@ const NotFound = () => {
       </div>
     </div>
   );
-};
-
-export default NotFound;
+}

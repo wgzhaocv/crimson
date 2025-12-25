@@ -1,8 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse, userAgent } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "./lib/auth";
 import { handleShare } from "./lib/shareProxy/handleShare";
-import { checkIsBotForOg } from "./lib/shareProxy/checkIsBotForOg";
 import { handleBotView } from "./lib/shareProxy/handleBotView";
 
 export async function proxy(request: NextRequest) {
@@ -27,7 +26,9 @@ export async function proxy(request: NextRequest) {
 
   // /share/:id 处理
   if (pathname.startsWith("/share/")) {
-    if (checkIsBotForOg(request)) {
+    // 使用 Next.js 内置的 bot 检测
+    const { isBot } = userAgent(request);
+    if (isBot) {
       return handleBotView(request);
     }
     return handleShare(request);
