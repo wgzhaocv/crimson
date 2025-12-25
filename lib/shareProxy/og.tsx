@@ -1,6 +1,56 @@
 const BASE_URL = process.env.BASE_URL || "https://crimson.app";
 
 /**
+ * 从 HTML 中提取 head 信息
+ */
+const extractHeadInfo = (html: string) => {
+  const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
+  const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i)
+    || html.match(/<meta[^>]*content=["']([^"']*)["'][^>]*name=["']description["']/i);
+
+  return {
+    title: titleMatch?.[1]?.trim() || "共有コンテンツ",
+    description: descMatch?.[1]?.trim() || "Crimsonで共有されたコンテンツです。",
+  };
+};
+
+/**
+ * HTML 字符串：用于公开内容（给 SNS bot 使用）
+ * 从原始 HTML 提取 title/description 并生成 OG 标签
+ */
+export const getPublicShareOgHtml = (pathname: string, originalHtml: string): string => {
+  const ogUrl = `${BASE_URL}${pathname}`;
+  const { title, description } = extractHeadInfo(originalHtml);
+
+  return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title} - Crimson</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="${description}">
+  <link rel="canonical" href="${ogUrl}">
+
+  <!-- OpenGraph Meta Tags -->
+  <meta property="og:title" content="${title}">
+  <meta property="og:description" content="${description}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${ogUrl}">
+  <meta property="og:site_name" content="Crimson">
+  <meta property="og:locale" content="ja_JP">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="${title}">
+  <meta name="twitter:description" content="${description}">
+</head>
+<body></body>
+</html>`;
+};
+
+/**
  * HTML 字符串：用于提示内容不存在或不公开（给 SNS bot 使用）
  * @param pathname - 页面路径，如 /share/abc123，会与 BASE_URL 拼接成完整 URL
  */
