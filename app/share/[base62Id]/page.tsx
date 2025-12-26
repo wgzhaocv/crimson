@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
 import PinEntry from "./components/PinEntry";
 import RateLimited from "./components/RateLimited";
+import NotFound from "./not-found";
 
 const ShareValidationPage = async () => {
   const shareState = (await cookies()).get("share-state")?.value;
@@ -20,10 +20,10 @@ const ShareValidationPage = async () => {
   }
 
   if (shareState === "not-found") {
-    notFound();
+    return <NotFound />;
   }
 
-  notFound();
+  return <NotFound />;
 };
 
 export default ShareValidationPage;
