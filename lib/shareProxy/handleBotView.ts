@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { base62ToSnowflake } from "../base62";
+import { base62ToSnowflake, snowflakeToBase62 } from "../base62";
 import { getShareCache } from "../redisCache/shareCache";
 import { getNotFoundOrPrivateOgHtml, getPasswordRequiredOgHtml, getPublicShareOgHtml } from "./og";
 
@@ -30,6 +30,9 @@ export const handleBotView = async (request: NextRequest) => {
     return createHtmlResponse(getPasswordRequiredOgHtml(pathname));
   }
 
-  // 公开：提取原始 HTML 信息生成 OG 标签
-  return createHtmlResponse(getPublicShareOgHtml(pathname, shareData.content));
+  // 公开：提取原始 HTML 信息生成 OG 标签，有截图则作为 og:image
+  return createHtmlResponse(getPublicShareOgHtml(pathname, shareData.content, {
+    base62Id,
+    coverId: shareData.coverId ? snowflakeToBase62(BigInt(shareData.coverId)) : null,
+  }));
 };

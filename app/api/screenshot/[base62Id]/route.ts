@@ -1,10 +1,12 @@
 import { db } from "@/lib/db";
 import { share } from "@/lib/db/schema/biz-schema";
 import { base62ToSnowflake, snowflakeToBase62 } from "@/lib/base62";
+import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import { join } from "path";
+import { headers } from "next/headers";
 
 const SCREENSHOT_DIR = join(process.cwd(), "files", "screenshots");
 
@@ -17,13 +19,27 @@ export async function GET(request: Request, { params }: Params) {
     const id = base62ToSnowflake(base62Id);
 
     const result = await db
-      .select({ coverId: share.coverId })
+      .select({
+        coverId: share.coverId,
+        accessType: share.accessType,
+        ownerId: share.ownerId,
+      })
       .from(share)
       .where(eq(share.id, id))
       .limit(1);
 
     if (result.length === 0 || !result[0].coverId) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    // 非公开分享需要验证是否为 owner
+    if (result[0].accessType !== "public") {
+      const session = await auth.api.getSession({
+        headers: await headers(),
+      });
+      if (!session || session.user.id !== result[0].ownerId) {
+        return NextResponse.json({ error: "Not found" }, { status: 404 });
+      }
     }
 
     const etag = `"${snowflakeToBase62(result[0].coverId)}"`;

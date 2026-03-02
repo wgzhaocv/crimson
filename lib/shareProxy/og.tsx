@@ -18,9 +18,34 @@ const extractHeadInfo = (html: string) => {
  * HTML 字符串：用于公开内容（给 SNS bot 使用）
  * 从原始 HTML 提取 title/description 并生成 OG 标签
  */
-export const getPublicShareOgHtml = (pathname: string, originalHtml: string): string => {
+export const getPublicShareOgHtml = (
+  pathname: string,
+  originalHtml: string,
+  options?: { base62Id: string; coverId: string | null },
+): string => {
   const ogUrl = `${BASE_URL}${pathname}`;
   const { title, description } = extractHeadInfo(originalHtml);
+
+  const hasImage = options?.coverId;
+  const ogImageUrl = hasImage
+    ? `${BASE_URL}/api/screenshot/${options.base62Id}?v=${options.coverId}`
+    : "";
+
+  const imageMetaTags = hasImage
+    ? `
+  <meta property="og:image" content="${ogImageUrl}">
+  <meta property="og:image:alt" content="${title}">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="720">`
+    : "";
+
+  const twitterCard = hasImage ? "summary_large_image" : "summary";
+  const twitterImageTag = hasImage
+    ? `
+  <meta name="twitter:image" content="${ogImageUrl}">
+  <meta name="twitter:image:alt" content="${title}">`
+    : "";
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -37,14 +62,14 @@ export const getPublicShareOgHtml = (pathname: string, originalHtml: string): st
   <meta property="og:title" content="${title}">
   <meta property="og:description" content="${description}">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="${ogUrl}">
+  <meta property="og:url" content="${ogUrl}">${imageMetaTags}
   <meta property="og:site_name" content="Crimson">
   <meta property="og:locale" content="ja_JP">
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="${twitterCard}">
   <meta name="twitter:title" content="${title}">
-  <meta name="twitter:description" content="${description}">
+  <meta name="twitter:description" content="${description}">${twitterImageTag}
 </head>
 <body></body>
 </html>`;
