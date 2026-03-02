@@ -32,13 +32,20 @@ export async function GET(request: Request, { params }: Params) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    // 非公开分享需要验证是否为 owner
+    // 权限校验：public 放行；非 public 需要 coverId 凭证或 owner session
     if (result[0].accessType !== "public") {
-      const session = await auth.api.getSession({
-        headers: await headers(),
-      });
-      if (!session || session.user.id !== result[0].ownerId) {
-        return NextResponse.json({ error: "Not found" }, { status: 404 });
+      const url = new URL(request.url);
+      const vParam = url.searchParams.get("v");
+      const coverIdBase62 = snowflakeToBase62(result[0].coverId);
+
+      // coverId 匹配视为合法访问（仅 owner 能通过 /api/shares 获得 coverId）
+      if (vParam !== coverIdBase62) {
+        const session = await auth.api.getSession({
+          headers: await headers(),
+        });
+        if (!session || session.user.id !== result[0].ownerId) {
+          return NextResponse.json({ error: "Not found" }, { status: 404 });
+        }
       }
     }
 
