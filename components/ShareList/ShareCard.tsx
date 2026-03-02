@@ -164,6 +164,7 @@ export const ShareCard = ({
               src={`/api/screenshot/${share.id}?v=${share.coverId}`}
               alt={share.title || "プレビュー"}
               fill
+              unoptimized
               className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
               onError={handleImgError}
