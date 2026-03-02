@@ -38,15 +38,17 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Spinner } from "../ui/spinner";
 import { ButtonGroup } from "../ui/button-group";
+import Image from "next/image";
 
 export type ShareListItemType = {
   id: string;
   title: string | null;
   accessType: "public" | "password" | "private";
   viewCount: number;
+  coverId: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -97,6 +99,9 @@ export const ShareCard = ({
   const config = accessTypeConfig[share.accessType];
   const AccessIcon = config.icon;
   const gradient = getGradient(share.id);
+  const [imgFailed, setImgFailed] = useState(false);
+  const handleImgError = useCallback(() => setImgFailed(true), []);
+  const showImage = share.coverId && !imgFailed;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -150,10 +155,20 @@ export const ShareCard = ({
       <CardContent>
         <div
           className={cn(
-            "relative aspect-video overflow-hidden rounded-sm bg-linear-to-br",
-            gradient,
+            "relative aspect-video overflow-hidden rounded-sm",
+            !showImage && `bg-linear-to-br ${gradient}`,
           )}
         >
+          {showImage && (
+            <Image
+              src={`/api/screenshot/${share.id}?v=${share.coverId}`}
+              alt={share.title || "プレビュー"}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              onError={handleImgError}
+            />
+          )}
           {/* Action Buttons */}
           <ButtonGroup className="bg-card/90 absolute right-2 bottom-2 flex items-center gap-0.5 overflow-hidden rounded-sm shadow-sm backdrop-blur-sm">
             <Tooltip>

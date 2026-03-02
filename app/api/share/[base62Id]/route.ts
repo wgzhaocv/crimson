@@ -10,7 +10,10 @@ import {
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { deleteShareCache, getShareCache } from "@/lib/redisCache/shareCache";
-import { base62ToSnowflake } from "@/lib/base62";
+import { base62ToSnowflake, snowflakeToBase62 } from "@/lib/base62";
+import { enqueueScreenshot } from "@/lib/screenshotQueue";
+import { unlink } from "fs/promises";
+import { join } from "path";
 
 type Params = { params: Promise<{ base62Id: string }> };
 
@@ -71,6 +74,7 @@ export async function PUT(request: Request, { params }: Params) {
     // 检查核心字段是否有变化
     const now = new Date();
     const coreFieldsChanged = pinHash !== existingShare.pinHash;
+    const contentChanged = html !== existingShare.content;
 
     await db
       .update(share)
@@ -81,11 +85,25 @@ export async function PUT(request: Request, { params }: Params) {
         pinHash,
         updatedAt: now,
         ...(coreFieldsChanged && { contentUpdatedAt: now }),
+        // 内容变更时：置空 coverId 并更新 contentUpdatedAt
+        ...(contentChanged && { coverId: null, contentUpdatedAt: now }),
       })
       .where(eq(share.id, id));
 
     // 清除缓存
     await deleteShareCache(id);
+
+    // 内容变更时：删除旧截图文件，重新入队
+    if (contentChanged) {
+      if (existingShare.coverId) {
+        const oldFilename = `${snowflakeToBase62(existingShare.coverId)}.jpg`;
+        const oldPath = join(process.cwd(), "files", "screenshots", oldFilename);
+        unlink(oldPath).catch(() => {});
+      }
+      enqueueScreenshot(id, now).catch((err) =>
+        console.error("[screenshot] enqueue failed:", err)
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -108,6 +126,13 @@ export async function DELETE(_request: Request, { params }: Params) {
   const { id } = shareResult;
 
   try {
+    // 删除截图文件（如果存在）
+    if (shareResult.share.coverId) {
+      const filename = `${snowflakeToBase62(shareResult.share.coverId)}.jpg`;
+      const filepath = join(process.cwd(), "files", "screenshots", filename);
+      await unlink(filepath).catch(() => {});
+    }
+
     await db.delete(share).where(eq(share.id, id));
 
     // 清除缓存

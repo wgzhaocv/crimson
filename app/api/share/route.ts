@@ -6,6 +6,7 @@ import { createShareSchema } from "@/lib/schemas/share";
 import { getSessionOrError, hashPin, parseZodError } from "./utils";
 import { NextResponse } from "next/server";
 import { setShareCache } from "@/lib/redisCache/shareCache";
+import { enqueueScreenshot } from "@/lib/screenshotQueue";
 
 export async function POST(request: Request) {
   const sessionResult = await getSessionOrError();
@@ -44,6 +45,11 @@ export async function POST(request: Request) {
 
     // 写入缓存
     await setShareCache(newShare);
+
+    // 异步入队截图任务（fire-and-forget）
+    enqueueScreenshot(id, now).catch((err) =>
+      console.error("[screenshot] enqueue failed:", err)
+    );
 
     return NextResponse.json({ id: snowflakeToBase62(id) });
   } catch (error) {

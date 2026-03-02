@@ -23,6 +23,7 @@ export async function GET() {
         title: share.title,
         accessType: share.accessType,
         viewCount: share.viewCount,
+        coverId: share.coverId,
         createdAt: share.createdAt,
         updatedAt: share.updatedAt,
       })
@@ -38,6 +39,7 @@ export async function GET() {
         ...s,
         viewCount: s.viewCount + (deltas.get(s.id.toString()) ?? 0),
         id: snowflakeToBase62(s.id),
+        coverId: s.coverId ? snowflakeToBase62(s.coverId) : null,
       })),
     );
   } catch (error) {
