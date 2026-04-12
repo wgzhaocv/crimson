@@ -29,7 +29,7 @@ scp ${TAR_FILE} ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/
 # 传输环境变量文件到服务器（如果存在）
 if [ -f .env.build ]; then
     echo "✅ 传输 .env.build 文件到服务器..."
-    scp .env.build ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/.env
+    scp .env.build ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/${IMAGE_NAME}.env
 fi
 
 # 在服务器上加载镜像并运行容器
@@ -50,7 +50,7 @@ ssh ${REMOTE_USER}@${REMOTE_HOST} << EOF
       --restart always \
       --network host \
       -v /home/${REMOTE_USER}/storage:/app/files \
-      --env-file .env \
+      --env-file ${IMAGE_NAME}.env \
       ${IMAGE_NAME}:${IMAGE_TAG}
 
     # 清理服务器上的 tar 文件
