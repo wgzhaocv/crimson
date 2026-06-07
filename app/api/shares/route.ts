@@ -1,20 +1,15 @@
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { share } from "@/lib/db/schema/biz-schema";
 import { snowflakeToBase62 } from "@/lib/base62";
-import { headers } from "next/headers";
+import { resolveUserId } from "@/lib/auth-bridge";
 import { NextResponse } from "next/server";
 import { desc, eq } from "drizzle-orm";
 import { getViewCountTotalDeltas } from "@/lib/viewTracking";
 
 export async function GET() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
-  }
+  const result = await resolveUserId();
+  if ("error" in result) return result.error;
+  const { userId } = result;
 
   try {
     const shares = await db
@@ -28,7 +23,7 @@ export async function GET() {
         updatedAt: share.updatedAt,
       })
       .from(share)
-      .where(eq(share.ownerId, session.user.id))
+      .where(eq(share.ownerId, userId))
       .orderBy(desc(share.createdAt));
 
     // 近实时：DB viewCount + Redis 增量

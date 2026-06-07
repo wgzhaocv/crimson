@@ -1,25 +1,15 @@
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { share } from "@/lib/db/schema/biz-schema";
 import { base62ToSnowflake } from "@/lib/base62";
-import { headers } from "next/headers";
+import { resolveUserId } from "@/lib/auth-bridge";
 import { NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import type { ZodError } from "zod";
 
-// 获取 session，返回 userId 或错误响应
+// 获取当前用户，返回 userId 或错误响应。认证解析下沉到 resolveUserId，
+// 它在 cookie session 之外还认 amber 服务端的 secret+email 头。
 export async function getSessionOrError() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session?.user?.id) {
-    return {
-      error: NextResponse.json({ error: "認証が必要です" }, { status: 401 }),
-    };
-  }
-
-  return { userId: session.user.id };
+  return resolveUserId();
 }
 
 // 获取用户的 share，返回 share 或错误响应
