@@ -12,8 +12,9 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  // amber 服务端按 email 预建的用户（emailVerified=true）日后用 Google 登录时，
-  // 按 email link 到同一行而非报「account already exists」。
+  // 早期 amber 按 email 预建的存量行（emailVerified=true）在本人首次 Google 登录时
+  // 按 email link 到同一行，而非报「account already exists」。amber 已不再预建，但
+  // 这些历史行仍需 linking 才能被认领。
   account: {
     accountLinking: {
       enabled: true,

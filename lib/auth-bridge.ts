@@ -2,7 +2,6 @@ import { timingSafeEqual } from "crypto";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { nanoid } from "nanoid";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { user } from "@/lib/db/schema/auth-schema";
@@ -21,40 +20,23 @@ function secretMatches(provided: string, expected: string): boolean {
   return timingSafeEqual(a, b);
 }
 
-// 按 email 找用户；没有就建一个（emailVerified=true，日后 Google 登录按 email
-// link 到这同一行）。email 唯一约束 + onConflictDoNothing 兜并发插入。
-export async function findOrCreateUserByEmail(email: string): Promise<string> {
+// 按 email 找用户，没有返回 null。amber 侧已用 Google OAuth 验证过该 email，但
+// crimson 不替用户预建账号——本人需先在网页用 Google 登录一次（注册即登录）。
+// 早期 amber 直接预建的存量行（emailVerified=true）仍会命中，照常可用。
+async function findUserIdByEmail(email: string): Promise<string | null> {
   const found = await db
     .select({ id: user.id })
     .from(user)
     .where(eq(user.email, email))
     .limit(1);
-  if (found.length > 0) return found[0].id;
-
-  await db
-    .insert(user)
-    .values({
-      id: nanoid(),
-      name: email.split("@")[0] || email,
-      email,
-      emailVerified: true,
-    })
-    .onConflictDoNothing({ target: user.email });
-
-  // insert 成功或并发冲突都靠这次 re-select 拿到稳定 id。
-  const row = await db
-    .select({ id: user.id })
-    .from(user)
-    .where(eq(user.email, email))
-    .limit(1);
-  return row[0].id;
+  return found[0]?.id ?? null;
 }
 
 type ResolveResult = { userId: string } | { error: NextResponse };
 
-// 现有 cookie session 之外，多认一条「amber secret + email」路径。命中走
-// find-or-create；否则回落到 better-auth 的 session。返回形状与原
-// getSessionOrError 完全一致，所以所有调用点无需改动。
+// 现有 cookie session 之外，多认一条「amber secret + email」路径。命中且该
+// email 已注册则放行；未注册回 403 引导网页登录；否则回落到 better-auth 的
+// session。返回形状与原 getSessionOrError 完全一致，所以所有调用点无需改动。
 export async function resolveUserId(): Promise<ResolveResult> {
   const h = await headers();
 
@@ -70,7 +52,16 @@ export async function resolveUserId(): Promise<ResolveResult> {
         ),
       };
     }
-    const userId = await findOrCreateUserByEmail(email);
+    const userId = await findUserIdByEmail(email);
+    if (!userId) {
+      const base = process.env.BASE_URL;
+      const hint = base
+        ? `crimson に未登録です。先に ${base}/login で Google ログインしてください`
+        : "crimson に未登録です。先にブラウザで Google ログインしてください";
+      return {
+        error: NextResponse.json({ error: hint }, { status: 403 }),
+      };
+    }
     return { userId };
   }
 
