@@ -1,5 +1,5 @@
 import { timingSafeEqual } from "crypto";
-import { eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -23,11 +23,13 @@ function secretMatches(provided: string, expected: string): boolean {
 // 按 email 找用户，没有返回 null。amber 侧已用 Google OAuth 验证过该 email，但
 // crimson 不替用户预建账号——本人需先在网页用 Google 登录一次（注册即登录）。
 // 早期 amber 直接预建的存量行（emailVerified=true）仍会命中，照常可用。
+// 大小写无关匹配：两端 email 写入未统一规范化（Google OAuth 实际都给小写），
+// 但万一大小写不一致也不该把已注册用户误判成未注册。
 async function findUserIdByEmail(email: string): Promise<string | null> {
   const found = await db
     .select({ id: user.id })
     .from(user)
-    .where(eq(user.email, email))
+    .where(sql`lower(${user.email}) = ${email.toLowerCase()}`)
     .limit(1);
   return found[0]?.id ?? null;
 }

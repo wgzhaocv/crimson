@@ -71,6 +71,16 @@ export async function PUT(request: Request, { params }: Params) {
       ? await hashPin(accessType, pin)
       : existingShare.pinHash;
 
+    // 兜底：password 访问却没有有效 pinHash（例如把无密码的页面改成 password
+    // 却没传新 PIN）会落成"谁都打不开"的死锁页。schema 只在 changePin=true 时
+    // 校验 PIN，挡不住 changePin=false 的这种组合，所以在这里拦。
+    if (accessType === "password" && !pinHash) {
+      return NextResponse.json(
+        { error: "パスワード保護にはPINが必要です" },
+        { status: 400 },
+      );
+    }
+
     // 检查核心字段是否有变化
     const now = new Date();
     const coreFieldsChanged = pinHash !== existingShare.pinHash;
