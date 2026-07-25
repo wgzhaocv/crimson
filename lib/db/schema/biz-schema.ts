@@ -9,6 +9,7 @@ import {
   date,
   pgEnum,
   bigint,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
 
@@ -79,7 +80,12 @@ export const shareDailyStat = pgTable(
     totalViews: integer("total_views").default(0).notNull(),
   },
   (table) => [
-    { pk: [table.shareId, table.statDate] },
+    // 複合主鍵。`{ pk: [...] }` のようなオブジェクト直書きは drizzle が黙って無視するため、
+    // 主鍵が生成されず render-rs 側の ON CONFLICT (share_id, stat_date) が実行時に落ちる。
+    primaryKey({
+      name: "share_daily_stat_share_id_stat_date_pk",
+      columns: [table.shareId, table.statDate],
+    }),
     index("shareDailyStat_statDate_idx").on(table.statDate),
   ],
 );

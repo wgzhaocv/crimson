@@ -1,0 +1,1 @@
+ALTER TABLE "share_daily_stat" ADD CONSTRAINT "share_daily_stat_share_id_stat_date_pk" PRIMARY KEY("share_id","stat_date");
